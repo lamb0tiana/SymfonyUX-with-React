@@ -9,9 +9,20 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\SerializerInterface;
 
+/**
+ * @deprecated("I abondonned this denormalizer or now, continue on it will take me much more time of concept and implementation, to be continue...")
+ * Class EntityNormalizer
+ * @package App\Serializer
+ */
 class EntityNormalizer implements DenormalizerInterface
 {
+    private function getSerializer(): SerializerInterface
+    {
+        return new Serializer([new ObjectNormalizer()], [new JsonEncoder()]);
+    }
+
     public function denormalize(mixed $data, string $type, string $format = null, array $context = [])
     {
         $excludedCandidates = $this->extractMoreComplexData($type);
@@ -20,30 +31,47 @@ class EntityNormalizer implements DenormalizerInterface
             return $e->getName();
         }, $excludedCandidates);
 
-        $serializer = new Serializer([new ObjectNormalizer()], [new JsonEncoder()]);
 
         $this->denormalizeMoreComplexData($excludedCandidates, $data);
 
-        return $serializer->deserialize(json_encode($data), $type, $format, [AbstractNormalizer::IGNORED_ATTRIBUTES => $excludeFields]);
+        return $this->getSerializer()->deserialize(json_encode($data), $type, $format, [AbstractNormalizer::IGNORED_ATTRIBUTES => $excludeFields]);
     }
 
     private function denormalizeMoreComplexData(array $candidates, mixed $data)
     {
         array_map(function (\ReflectionProperty $candidate) use ($data) {
-            $property = $candidate->getName();
-            $class = $candidate->getType()->getName();
-            if ($class === Collection::class) {
-                $instance = new ArrayCollection();
-            } else {
-                $instance = new $class();
-            }
 
-            $instanceReflection = new \ReflectionObject($instance);
+            $attributeDatas = (array_filter($candidate->getAttributes(), function (\ReflectionAttribute $attribute) {
+                return in_array('targetEntity', $attribute->getArguments());
+            }));
 
-            if ($instanceReflection->isIterable() && in_array($property, $data) && is_array($data[$property])) {
-                $ii = '';
+            if (count($attributeDatas) > 0) {
+                $property = $candidate->getName();
+                $propertyType = $candidate->getType()->getName();
+
+                if ($propertyType === Collection::class) {
+                    $instance = new ArrayCollection();
+                } else {
+                    $instance = new $propertyType();
+                }
+
+                /** @var \ReflectionAttribute $attribute */
+                $attribute = array_values($attributeDatas)[0];
+                $arguments = $attribute->getArguments();
+
+
+                $instanceReflection = new \ReflectionObject($instance);
+
+                if ($instanceReflection->isIterable() && isset($data[$property]) && is_array($data[$property])) {
+                    $rowData = $data[$property];
+                    for ($r = 0; $r < $rowData; $r++) {
+                        //TODO: HERE HANDLE EMBED RELATION DATA MODEL
+                        $_data = $rowData[$r];
+                        $mm = $this->getSerializer()->deserialize(json_encode($_data), $arguments['targetEntity'], 'json');
+                        $i = '';
+                    }
+                }
             }
-            $candidate->getAttributes()[0]->getArguments();
         }, $candidates);
     }
 
@@ -59,6 +87,6 @@ class EntityNormalizer implements DenormalizerInterface
 
     public function supportsDenormalization(mixed $data, string $type, string $format = null): bool
     {
-        return true;
+        return false;
     }
 }
