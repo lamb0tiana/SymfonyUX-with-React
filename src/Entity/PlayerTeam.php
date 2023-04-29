@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\PlayerTeamRepository;
+use App\Validator\TransfertPlayer;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -22,6 +23,7 @@ class PlayerTeam
 
     #[ORM\Column]
     #[Groups(['read'])]
+    #[TransfertPlayer]
     private ?float $cost = null;
 
     #[ORM\ManyToOne(inversedBy: 'playerTeams')]
