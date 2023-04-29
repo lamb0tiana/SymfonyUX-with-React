@@ -2,6 +2,8 @@
 
 namespace App\Validator;
 
+use App\Entity\Player;
+use App\Entity\PlayerTeam;
 use App\Entity\Team;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -17,7 +19,11 @@ class TransfertPlayerValidator extends ConstraintValidator
     {
         /** @var Team $team */
         $team = $this->request->getCurrentRequest()->attributes->get('team');
-        if ($team->getMoneyBalance() < $value) {
+        /** @var Player $player */
+        $player = $this->request->getCurrentRequest()->attributes->get('player');
+
+        $owner = $this->manager->getRepository(PlayerTeam::class)->getTeamOfPlayer($player);
+        if ($owner && $owner !== $team && $team->getMoneyBalance() < $value) {
             $message = sprintf('The team %s have no sufficient funds for this transfert, current funds [%d$]', $team->getName(), $team->getMoneyBalance());
             $this->context->buildViolation($message)
                 ->addViolation();
