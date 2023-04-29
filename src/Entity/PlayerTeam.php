@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\PlayerTeamRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PlayerTeamRepository::class)]
 class PlayerTeam
@@ -18,14 +19,17 @@ class PlayerTeam
 
 
     #[ORM\Column]
+    #[Groups(['read'])]
     private ?float $cost = null;
 
     #[ORM\ManyToOne(inversedBy: 'playerTeams')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['read'])]
     private ?Player $player = null;
 
     #[ORM\ManyToOne(inversedBy: 'playerTeams')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['read'])]
     private ?Team $team = null;
 
 
