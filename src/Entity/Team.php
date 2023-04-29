@@ -3,13 +3,17 @@
 namespace App\Entity;
 
 use App\Repository\TeamRepository;
+use App\Validator\CountryCodeValidator;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Validator\Constraints\Country;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\Type;
 
 #[ORM\Entity(repositoryClass: TeamRepository::class)]
-class Team
+class Team implements TraceableErrors
 {
     use TimestampableEntity;
 
@@ -19,12 +23,15 @@ class Team
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Length(min: 4, minMessage: 'Too short, min 4')]
     private ?string $name = null;
 
     #[ORM\Column(length: 5)]
+    #[Country(message: 'Wrong country code')]
     private ?string $countryCode = null;
 
     #[ORM\Column]
+    #[Type(type: 'float')]
     private ?float $moneyBalance = null;
 
     #[ORM\OneToMany(mappedBy: 'team', targetEntity: PlayerTeam::class, orphanRemoval: true)]
@@ -34,7 +41,7 @@ class Team
     {
         $this->playerTeams = new ArrayCollection();
     }
-    
+
     public function getId(): ?int
     {
         return $this->id;
