@@ -5,11 +5,10 @@ namespace App\Controller\Api;
 use App\Entity\Team;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 
-#[Route('/team')]
+#[Route('/teams')]
 class TeamController extends BaseApiController
 {
 
