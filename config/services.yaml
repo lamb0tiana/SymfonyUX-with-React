@@ -19,7 +19,8 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
-    App\Serializer\EntityNormalizer:
-        tags: ['serializer.normalizer']
+    App\EventSubscriber\DoctrineSubscriber:
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

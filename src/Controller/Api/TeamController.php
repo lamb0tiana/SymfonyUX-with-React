@@ -60,7 +60,6 @@ class TeamController extends BaseApiController
 
         try {
             $response = $this->normalizer->normalize($playerTeam, 'json', ['groups' => ['read']]);
-            $this->manager->persist($playerTeam);
             $errors = $this->validator->validate($playerTeam);
             if ($errors->count()>0) {
                 $err = [];
@@ -71,6 +70,7 @@ class TeamController extends BaseApiController
 
                 return $this->json($err, Response::HTTP_BAD_REQUEST);
             }
+            $this->manager->persist($playerTeam);
             $this->manager->flush();
             return $this->json($response, Response::HTTP_CREATED);
         } catch (ExceptionInterface $exception) {
