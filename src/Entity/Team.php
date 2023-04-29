@@ -3,11 +3,11 @@
 namespace App\Entity;
 
 use App\Repository\TeamRepository;
-use App\Validator\CountryCodeValidator;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\Country;
 use Symfony\Component\Validator\Constraints\Length;
@@ -15,6 +15,7 @@ use Symfony\Component\Validator\Constraints\Type;
 
 #[ORM\Entity(repositoryClass: TeamRepository::class)]
 #[Gedmo]
+#[UniqueEntity(fields: ['name'], message: 'Team with name {{ value }} already exists')]
 class Team implements TraceableErrors
 {
     use TimestampableEntity;
@@ -118,6 +119,4 @@ class Team implements TraceableErrors
 
         return $this;
     }
-
-
 }

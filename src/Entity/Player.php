@@ -7,9 +7,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints\Length;
 
 #[ORM\Entity(repositoryClass: PlayerRepository::class)]
-class Player
+#[Gedmo]
+class Player implements TraceableErrors
 {
     use TimestampableEntity;
 
@@ -19,9 +22,12 @@ class Player
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
-    private ?string $name = null;
+    #[Length(min: 4, minMessage: 'Too short, min 4')]
+    #[Groups(['read'])]
+    private string $name;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['read'])]
     private ?string $surname = null;
 
     #[ORM\OneToMany(mappedBy: 'player', targetEntity: PlayerTeam::class, orphanRemoval: true)]
@@ -90,5 +96,4 @@ class Player
 
         return $this;
     }
-
 }
