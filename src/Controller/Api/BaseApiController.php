@@ -30,7 +30,7 @@ class BaseApiController extends AbstractController
 
         $errors = $this->getEntityErrors($entity);
         if ($errors) {
-            return $this->json($errors);
+            return $this->json($errors, Response::HTTP_BAD_REQUEST);
         }
 
         $this->manager->persist($entity);
