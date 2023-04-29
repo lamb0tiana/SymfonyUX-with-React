@@ -8,11 +8,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\Country;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Type;
 
 #[ORM\Entity(repositoryClass: TeamRepository::class)]
+#[Gedmo]
 class Team implements TraceableErrors
 {
     use TimestampableEntity;
@@ -20,18 +22,22 @@ class Team implements TraceableErrors
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
     #[Length(min: 4, minMessage: 'Too short, min 4')]
+    #[Groups(['read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 5)]
     #[Country(message: 'Wrong country code')]
+    #[Groups(['read'])]
     private ?string $countryCode = null;
 
     #[ORM\Column]
     #[Type(type: 'float')]
+    #[Groups(['read'])]
     private ?float $moneyBalance = null;
 
     #[ORM\OneToMany(mappedBy: 'team', targetEntity: PlayerTeam::class, orphanRemoval: true)]
