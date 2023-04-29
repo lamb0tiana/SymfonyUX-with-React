@@ -5,9 +5,11 @@ namespace App\Entity;
 use App\Repository\PlayerTeamRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PlayerTeamRepository::class)]
+#[UniqueEntity(fields: ['player','team'], message: 'This player is already in this team')]
 class PlayerTeam
 {
     use TimestampableEntity;
