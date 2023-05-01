@@ -3,7 +3,9 @@
     "module": "commonjs",
     "target": "es5",
     "sourceMap": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
   },
   "compileOnSave": true,
   "exclude": [

@@ -1,8 +1,9 @@
 import React from 'react'
+import Login from "../components/login";
 
 
 const App = (props) => {
-    return <div>Hello app</div>;
+    return <Login/>
 }
 
 export default App
