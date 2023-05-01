@@ -14,6 +14,12 @@ use Symfony\Component\Serializer\Exception\ExceptionInterface;
 #[Route('/teams')]
 class TeamController extends BaseApiController
 {
+    #[Route('/')]
+    public function index()
+    {
+        return $this->json(['check logged in']);
+    }
+
     #[Route('/create', name: 'create_team', methods: [Request::METHOD_POST])]
     public function create(Request $request): JsonResponse
     {
