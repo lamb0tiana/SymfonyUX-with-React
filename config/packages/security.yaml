@@ -10,19 +10,27 @@ security:
                 class: App\Entity\TeamManager
                 property: email
         jwt:
-            lexik_jwt: ~
+            lexik_jwt:
+                class: App\Entity\TeamManager
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         login:
-            pattern: ^/api
+            pattern: ^/api/authentication
             stateless: true
-            provider: jwt
+            provider: app_user_provider
             json_login:
                 check_path: api_authentication
+                username_path: email
+                password_path: password
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
+        api:
+            pattern: ^/api
+            provider: jwt
+            stateless: true
             jwt: ~
 
             # activate different ways to authenticate

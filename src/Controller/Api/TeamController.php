@@ -5,6 +5,7 @@ namespace App\Controller\Api;
 use App\Entity\Player;
 use App\Entity\PlayerTeam;
 use App\Entity\Team;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,8 +16,9 @@ use Symfony\Component\Serializer\Exception\ExceptionInterface;
 class TeamController extends BaseApiController
 {
     #[Route('/')]
-    public function index()
+    public function index(Security $security, Request $request)
     {
+        dd($security->getUser());
         return $this->json(['check logged in']);
     }
 

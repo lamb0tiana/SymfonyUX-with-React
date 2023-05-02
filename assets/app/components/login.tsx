@@ -8,12 +8,16 @@ import {
     Link,
     Grid,
 } from '@material-ui/core';
+import axios from 'axios';
 
 const Login = () => {
     const [creds, setCredentials] = useState<{email: string, password: string}>({email: '', password: ''})
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         console.log(creds);
+        const credentialRoute = `${process.env.API_URL}/authentication`
+        const token= axios.post(credentialRoute, creds)
+        console.log(token)
     };
 
     const handleFieldChange = (e: ChangeEvent<HTMLInputElement>) => {

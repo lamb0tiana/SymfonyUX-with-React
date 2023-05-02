@@ -4,11 +4,12 @@ namespace App\Entity;
 
 use App\Repository\TeamManagerRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Lexik\Bundle\JWTAuthenticationBundle\Security\User\JWTUserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: TeamManagerRepository::class)]
-class TeamManager implements UserInterface, PasswordAuthenticatedUserInterface
+class TeamManager implements UserInterface, PasswordAuthenticatedUserInterface, JWTUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -95,5 +96,12 @@ class TeamManager implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public static function createFromPayload($username, array $payload)
+    {
+
+        return (new self(
+        ))->setRoles($payload['roles'])->setEmail($payload['username']);
     }
 }
