@@ -10,12 +10,13 @@ import {
 } from '@material-ui/core'
 import axios from 'axios'
 import { setAppToekn } from '../utils/auth'
+import { useAuth } from '../context/authContext'
 
 const Login = () => {
   const [creds, setCredentials] = useState<{ email: string; password: string }>(
     { email: 'demo@dev.mg', password: '' }
   )
-
+  const { token, dispatch } = useAuth()
   const [error, setError] = useState<string>(null)
 
   const handleSubmit = async (event) => {
@@ -28,7 +29,7 @@ const Login = () => {
       setError(data.message)
     } else {
       const { token } = data
-      setAppToekn(token)
+      dispatch({ token })
     }
   }
 
