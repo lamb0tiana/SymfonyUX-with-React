@@ -28,6 +28,9 @@ class TeamManager implements UserInterface, PasswordAuthenticatedUserInterface, 
     #[ORM\Column]
     private ?string $password = null;
 
+    #[ORM\OneToOne(inversedBy: 'teamManager', cascade: ['persist', 'remove'])]
+    private ?Team $team = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -108,5 +111,17 @@ class TeamManager implements UserInterface, PasswordAuthenticatedUserInterface, 
     {
         return (new self(
         ))->setRoles($payload['roles'])->setEmail($payload['email'])->setId($payload['id']);
+    }
+
+    public function getTeam(): ?Team
+    {
+        return $this->team;
+    }
+
+    public function setTeam(?Team $team): self
+    {
+        $this->team = $team;
+
+        return $this;
     }
 }
