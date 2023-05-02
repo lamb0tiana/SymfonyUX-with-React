@@ -33,6 +33,12 @@ class TeamManager implements UserInterface, PasswordAuthenticatedUserInterface, 
         return $this->id;
     }
 
+    public function setId(?int $id): self
+    {
+        $this->id = $id;
+        return $this;
+    }
+
     public function getEmail(): ?string
     {
         return $this->email;
@@ -100,8 +106,7 @@ class TeamManager implements UserInterface, PasswordAuthenticatedUserInterface, 
 
     public static function createFromPayload($username, array $payload)
     {
-
         return (new self(
-        ))->setRoles($payload['roles'])->setEmail($payload['username']);
+        ))->setRoles($payload['roles'])->setEmail($payload['email'])->setId($payload['id']);
     }
 }
