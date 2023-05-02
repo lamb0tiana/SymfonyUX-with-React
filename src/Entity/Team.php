@@ -44,6 +44,9 @@ class Team implements TraceableErrors
     #[ORM\OneToMany(mappedBy: 'team', targetEntity: PlayerTeam::class, orphanRemoval: true)]
     private Collection $playerTeams;
 
+    #[ORM\OneToOne(mappedBy: 'team', cascade: ['persist', 'remove'])]
+    private ?TeamManager $teamManager = null;
+
     public function __construct()
     {
         $this->playerTeams = new ArrayCollection();
@@ -116,6 +119,28 @@ class Team implements TraceableErrors
                 $playerTeam->setTeam(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getTeamManager(): ?TeamManager
+    {
+        return $this->teamManager;
+    }
+
+    public function setTeamManager(?TeamManager $teamManager): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($teamManager === null && $this->teamManager !== null) {
+            $this->teamManager->setTeam(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($teamManager !== null && $teamManager->getTeam() !== $this) {
+            $teamManager->setTeam($this);
+        }
+
+        $this->teamManager = $teamManager;
 
         return $this;
     }
