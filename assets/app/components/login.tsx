@@ -9,6 +9,7 @@ import {
   Grid,
 } from '@material-ui/core'
 import axios from 'axios'
+import { setAppToekn } from '../utils/auth'
 
 const Login = () => {
   const [creds, setCredentials] = useState<{ email: string; password: string }>(
@@ -27,8 +28,7 @@ const Login = () => {
       setError(data.message)
     } else {
       const { token } = data
-      localStorage.setItem('app_token', token)
-      axios.defaults.headers['Authorization'] = `Bearer ${token}`
+      setAppToekn(token)
     }
   }
 

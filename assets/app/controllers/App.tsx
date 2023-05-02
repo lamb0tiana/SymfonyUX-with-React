@@ -1,9 +1,8 @@
 import React from 'react'
-import Login from "../components/login";
-
+import Login from '../components/login'
 
 const App = (props) => {
-    return <Login/>
+  return <Login />
 }
 
 export default App
