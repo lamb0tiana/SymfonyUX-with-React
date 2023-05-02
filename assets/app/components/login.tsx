@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import {
   Typography,
   TextField,
@@ -9,12 +9,11 @@ import {
   Grid,
 } from '@material-ui/core'
 import axios from 'axios'
-import { setAppToekn } from '../utils/auth'
 import { useAuth } from '../context/authContext'
 
 const Login = () => {
   const [creds, setCredentials] = useState<{ email: string; password: string }>(
-    { email: 'demo@dev.mg', password: '' }
+    { email: 'demo@dev.mg', password: 'demo' }
   )
   const { token, dispatch } = useAuth()
   const [error, setError] = useState<string>(null)
@@ -37,6 +36,11 @@ const Login = () => {
     const { name } = e.target
     setCredentials({ ...creds, [name]: e.target.value })
   }
+
+  useEffect(() => {
+    const token = localStorage.getItem('app_token')
+    dispatch({ token })
+  }, [])
 
   return (
     <div

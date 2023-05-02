@@ -1,4 +1,7 @@
 import React, { useContext, useReducer } from 'react'
+import jwt_decode from 'jwt-decode'
+
+import axios from 'axios'
 interface AuthContextInterface {
   token: string | null
   dispatch: Function
@@ -17,7 +20,17 @@ const AuthWrapperContextComponent = ({ children }) => {
     (stateA, statB) => ({ ...stateA, ...statB }),
     defaultValue
   )
+  if (token) {
+    const decoded: { exp: number } = jwt_decode(token)
 
+    if (decoded.exp > new Date().getTime() / 1000) {
+      localStorage.setItem('app_token', token)
+      axios.defaults.headers['Authorization'] = `Bearer ${token}`
+    } else {
+      delete axios.defaults.headers['Authorization']
+      localStorage.removeItem('app_token')
+    }
+  }
   return (
     <AuthContext.Provider value={{ token, dispatch }}>
       {children}
