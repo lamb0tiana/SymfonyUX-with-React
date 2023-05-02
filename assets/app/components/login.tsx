@@ -9,7 +9,7 @@ import {
   Grid,
 } from '@material-ui/core'
 import axios from 'axios'
-import { useAuth } from '../context/authContext'
+import { useAuth, validateToken } from '../context/authContext'
 
 const Login = () => {
   const [creds, setCredentials] = useState<{ email: string; password: string }>(
@@ -28,7 +28,7 @@ const Login = () => {
       setError(data.message)
     } else {
       const { token } = data
-      dispatch({ token })
+      validateToken(token) && dispatch({ token })
     }
   }
 

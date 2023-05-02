@@ -20,17 +20,7 @@ const AuthWrapperContextComponent = ({ children }) => {
     (stateA, statB) => ({ ...stateA, ...statB }),
     defaultValue
   )
-  if (token) {
-    const decoded: { exp: number } = jwt_decode(token)
 
-    if (decoded.exp > new Date().getTime() / 1000) {
-      localStorage.setItem('app_token', token)
-      axios.defaults.headers['Authorization'] = `Bearer ${token}`
-    } else {
-      delete axios.defaults.headers['Authorization']
-      localStorage.removeItem('app_token')
-    }
-  }
   return (
     <AuthContext.Provider value={{ token, dispatch }}>
       {children}
@@ -41,4 +31,19 @@ const AuthWrapperContextComponent = ({ children }) => {
 export default AuthWrapperContextComponent
 
 const useAuth = () => useContext<AuthContextInterface>(AuthContext)
-export { useAuth }
+
+const validateToken = (token: string | null): boolean => {
+  if (!token) return false
+  const decoded: { exp: number } = jwt_decode(token)
+
+  if (decoded.exp > new Date().getTime() / 1000) {
+    localStorage.setItem('app_token', token)
+    axios.defaults.headers['Authorization'] = `Bearer ${token}`
+    return true
+  } else {
+    delete axios.defaults.headers['Authorization']
+    localStorage.removeItem('app_token')
+  }
+  return false
+}
+export { useAuth, validateToken }
