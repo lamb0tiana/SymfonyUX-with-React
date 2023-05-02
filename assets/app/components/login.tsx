@@ -11,13 +11,13 @@ import {
 import axios from 'axios';
 
 const Login = () => {
-    const [creds, setCredentials] = useState<{email: string, password: string}>({email: '', password: ''})
+    const [creds, setCredentials] = useState<{email: string, password: string}>({email: 'demo@dev.mg', password: ''})
     const handleSubmit = async (event) => {
         event.preventDefault();
         console.log(creds);
         const credentialRoute = `${process.env.API_URL}/authentication`
-        const token= axios.post(credentialRoute, creds)
-        console.log(token)
+        const {data} = await axios.post(credentialRoute, creds).catch(e => e.response)
+
     };
 
     const handleFieldChange = (e: ChangeEvent<HTMLInputElement>) => {
