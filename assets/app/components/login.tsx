@@ -10,6 +10,7 @@ import {
 } from '@material-ui/core'
 import axios from 'axios'
 import { useAuth, validateToken } from '../context/authContext'
+import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
   const [creds, setCredentials] = useState<{ email: string; password: string }>(
@@ -17,6 +18,7 @@ const Login = () => {
   )
   const { token, dispatch } = useAuth()
   const [error, setError] = useState<string>(null)
+  const navigate = useNavigate()
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -29,6 +31,7 @@ const Login = () => {
     } else {
       const { token } = data
       validateToken(token) && dispatch({ token })
+      navigate('/dashboard')
     }
   }
 

@@ -32,6 +32,11 @@ security:
             provider: jwt
             stateless: true
             jwt: ~
+        main:
+            pattern: ^/
+            provider: app_user_provider
+            form_login:
+                login_path: index
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -44,6 +49,7 @@ security:
     access_control:
         - { path: ^/api/authentication, roles: PUBLIC_ACCESS }
         - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/dashboard,       roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
     security:
