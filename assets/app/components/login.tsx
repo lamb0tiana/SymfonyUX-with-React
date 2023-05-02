@@ -14,12 +14,22 @@ const Login = () => {
   const [creds, setCredentials] = useState<{ email: string; password: string }>(
     { email: 'demo@dev.mg', password: '' }
   )
+
+  const [error, setError] = useState<string>(null)
+
   const handleSubmit = async (event) => {
     event.preventDefault()
     const credentialRoute = `${process.env.API_URL}/authentication`
-    const { data } = await axios
+    const { data, status } = await axios
       .post(credentialRoute, creds)
       .catch((e) => e.response)
+    if (status !== 200) {
+      setError(data.message)
+    } else {
+      const { token } = data
+      localStorage.setItem('app_token', token)
+      axios.defaults.headers['Authorization'] = `Bearer ${token}`
+    }
   }
 
   const handleFieldChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -37,6 +47,11 @@ const Login = () => {
       }}
     >
       <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: 400 }}>
+        {error && (
+          <Typography variant="body1" color="error" align={'center'}>
+            {error}
+          </Typography>
+        )}
         <Typography variant="h4" align="center" gutterBottom>
           Manager login
         </Typography>
