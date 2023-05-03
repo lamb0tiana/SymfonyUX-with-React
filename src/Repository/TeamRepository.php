@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Controller\Api\Constant;
 use App\Entity\Team;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -39,28 +40,24 @@ class TeamRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Team[] Returns an array of Team objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('t')
-//            ->andWhere('t.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('t.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    private function query(string $sql, bool $isArray = true): array|int
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare($sql);
+        $query = $stmt->executeQuery();
+        return $isArray ? $query->fetchAllAssociative() : $query->fetchOne();
+    }
 
-//    public function findOneBySomeField($value): ?Team
-//    {
-//        return $this->createQueryBuilder('t')
-//            ->andWhere('t.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function list(int $limit = Constant::PER_PAGE, int $offset = Constant::DEFAULT_PAGINATION_PAGE_OFFSET): array
+    {
+
+        $teamTable = $this->_em->getClassMetadata($this->_entityName)->getTableName();
+        $offset = ($offset -1) * $limit;
+        $sql = sprintf('SELECT id, name, country_code isocode, money_balance funds from %s limit %d,%d', $teamTable, $offset, $limit);
+        $data = $this->query($sql);
+
+        $aggregationQuery = sprintf('SELECT count(*) totalRow from %s', $teamTable);
+        $count = $this->query($aggregationQuery, false);
+        return ['teams' => $data, 'count' => $count];
+    }
 }

@@ -6,7 +6,7 @@ import AuthWrapperContextComponent, {
   useAuth,
   validateToken,
 } from '../context/authContext'
-import PlayerDataTable from '../components/Players/List'
+import PlayerDataTable from '../components/Players/TeamDataTable'
 
 const App = (props) => {
   const { dispatch } = useAuth()

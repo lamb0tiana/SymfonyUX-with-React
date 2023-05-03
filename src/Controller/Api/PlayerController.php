@@ -16,10 +16,4 @@ class PlayerController extends BaseApiController
     {
         return $this->post($request, Player::class);
     }
-
-    #[Route('/')]
-    public function list(Request $request, PlayerRepository $repository): JsonResponse
-    {
-        return $this->json(['data' => $repository->queryPlayer(), 'meta' => ['totalRowCount'=> 10]]);
-    }
 }

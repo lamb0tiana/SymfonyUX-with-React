@@ -42,25 +42,4 @@ class PlayerRepository extends ServiceEntityRepository
         }
     }
 
-
-    public function queryPlayer(): array
-    {
-        $conn = $this->getEntityManager()->getConnection();
-        $playerTable = $this->_em->getClassMetadata($this->_entityName)->getTableName();
-        $teamTable = $this->_em->getClassMetadata(Team::class)->getTableName();
-        $playerTeamTable = $this->_em->getClassMetadata(PlayerTeam::class)->getTableName();
-        $sql = sprintf('select
-                    p.id,p.name ,p.surname ,
-                    t.id ,t.name ,t.country_code ,t.money_balance
-                from
-                    %s pt
-                inner join %s p on
-                    pt.player_id = p.id
-                INNER JOIN %s t on
-                    pt.team_id = t.id', $playerTeamTable, $playerTable, $teamTable);
-        $stmt = $conn->prepare($sql);
-        $resultSet = $stmt->executeQuery();
-        return $resultSet->fetchAllAssociative();
-
-    }
 }

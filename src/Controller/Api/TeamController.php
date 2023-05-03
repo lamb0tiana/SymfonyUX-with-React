@@ -5,6 +5,7 @@ namespace App\Controller\Api;
 use App\Entity\Player;
 use App\Entity\PlayerTeam;
 use App\Entity\Team;
+use App\Repository\TeamRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,9 +16,12 @@ use Symfony\Component\Serializer\Exception\ExceptionInterface;
 class TeamController extends BaseApiController
 {
     #[Route('/')]
-    public function index()
+    public function index(Request $request, TeamRepository $repository)
     {
-        return $this->json(['check logged in']);
+        $limit = $request->query->get('limit', Constant::PER_PAGE);
+        $offset = $request->query->get('page', Constant::DEFAULT_PAGINATION_PAGE_OFFSET);
+        $data = $repository->list($limit, $offset);
+        return $this->json($data);
     }
 
     #[Route('/create', name: 'create_team', methods: [Request::METHOD_POST])]
