@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useEffect, useState } from 'react'
 import { Button, Grid, Link, TextField, Typography } from '@material-ui/core'
-import { useAuth, validateToken } from '../context/authContext'
+import { validateToken } from '../context/authContext'
 import { useNavigate } from 'react-router-dom'
 import { doQuery, QueryMethode } from '../utils'
 
@@ -8,7 +8,6 @@ const Login = () => {
   const [creds, setCredentials] = useState<{ email: string; password: string }>(
     { email: 'demo@dev.mg', password: 'demo' }
   )
-  const { token, dispatch } = useAuth()
   const [error, setError] = useState<string>(null)
   const navigate = useNavigate()
 
@@ -24,8 +23,7 @@ const Login = () => {
       setError(data.message)
     } else {
       const { token } = data
-      validateToken(token) && dispatch({ token })
-      navigate('/dashboard')
+      validateToken(token) && navigate('/dashboard')
     }
   }
 
@@ -33,11 +31,6 @@ const Login = () => {
     const { name } = e.target
     setCredentials({ ...creds, [name]: e.target.value })
   }
-
-  useEffect(() => {
-    const token = localStorage.getItem('app_token')
-    dispatch({ token })
-  }, [])
 
   return (
     <div

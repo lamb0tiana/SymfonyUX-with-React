@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react'
 import { Box, Button, Grid, LinearProgress, Typography } from '@mui/material'
 import Loader from '../Loader'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../../context/authContext'
 
 interface DataRowInterface {
   id: number
@@ -24,9 +25,10 @@ interface DataTableDataInterface {
   count: number
 }
 const TeamDataTable = () => {
-  const [page, setPage] = React.useState(0)
-  const [rowsPerPage, setRowsPerPage] = React.useState(10)
+  const [page, setPage] = useState(0)
+  const [rowsPerPage, setRowsPerPage] = useState(10)
   const [isFetchingData, setIsFetchingData] = useState(false)
+  const { dispatch } = useAuth()
   const [data, setData] = useState<DataTableDataInterface>({
     teams: [],
     count: 0,
@@ -49,9 +51,12 @@ const TeamDataTable = () => {
   }
 
   useEffect(() => {
-    const url = `${process.env.API_URL}/teams/?page=${
-      page + 1
-    }&limit=${rowsPerPage}`
+    dispatch({ token: localStorage.getItem('app_token') })
+  }, [])
+
+  useEffect(() => {
+    const _page = page + 1
+    const url = `${process.env.API_URL}/teams/?page=${_page}&limit=${rowsPerPage}`
     setIsFetchingData(true)
     doQuery(url).then(({ data }) => {
       setData(data)
