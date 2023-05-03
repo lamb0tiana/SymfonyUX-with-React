@@ -20,7 +20,7 @@ class TeamController extends BaseApiController
     {
         $limit = $request->query->get('limit', Constant::PER_PAGE);
         $offset = $request->query->get('page', Constant::DEFAULT_PAGINATION_PAGE_OFFSET);
-        $data = $repository->list($limit, $offset);
+        $data = $repository->getList($limit, $offset);
         return $this->json($data);
     }
 
@@ -86,5 +86,12 @@ class TeamController extends BaseApiController
         } catch (ExceptionInterface $exception) {
             return $this->json(["error" => $exception->getMessage(), "code" => $exception->getCode()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    #[Route("/{team}/players", name: 'get_team_players', methods: Request::METHOD_GET)]
+    public function getPlayers(Team $team, TeamRepository $repository): JsonResponse
+    {
+        $data = $repository->getPlayerList($team);
+        return $this->json($data);
     }
 }

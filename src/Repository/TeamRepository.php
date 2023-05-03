@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Controller\Api\Constant;
+use App\Entity\Player;
+use App\Entity\PlayerTeam;
 use App\Entity\Team;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -48,7 +50,7 @@ class TeamRepository extends ServiceEntityRepository
         return $isArray ? $query->fetchAllAssociative() : $query->fetchOne();
     }
 
-    public function list(int $limit = Constant::PER_PAGE, int $offset = Constant::DEFAULT_PAGINATION_PAGE_OFFSET): array
+    public function getList(int $limit = Constant::PER_PAGE, int $offset = Constant::DEFAULT_PAGINATION_PAGE_OFFSET): array
     {
 
         $teamTable = $this->_em->getClassMetadata($this->_entityName)->getTableName();
@@ -59,5 +61,14 @@ class TeamRepository extends ServiceEntityRepository
         $aggregationQuery = sprintf('SELECT count(*) totalRow from %s', $teamTable);
         $count = $this->query($aggregationQuery, false);
         return ['teams' => $data, 'count' => $count];
+    }
+
+    public function getPlayerList(Team $team): array
+    {
+        $playerTeamTable = $this->_em->getClassMetadata(PlayerTeam::class)->getTableName();
+        $playerTable = $this->_em->getClassMetadata(Player::class)->getTableName();
+
+        $sql = sprintf('SELECT p.id, p.name, p.surname FROM %s p inner join %s pt on p.id = pt.player_id and pt.team_id = %d', $playerTable, $playerTeamTable, $team->getId());
+        return $this->query($sql);
     }
 }
