@@ -14,7 +14,7 @@ class JWTSubscriber implements EventSubscriberInterface
         /** @var TeamManager $user */
         $user = $event->getUser();
         $data['email'] = $user->getEmail();
-        $data['team'] = $user->getTeam()?->getId();
+        $data['teamId'] = $user->getTeam()?->getId();
         $event->setData($data);
     }
 
