@@ -1,16 +1,8 @@
 import React, { ChangeEvent, useEffect, useState } from 'react'
-import {
-  Typography,
-  TextField,
-  FormControlLabel,
-  Checkbox,
-  Button,
-  Link,
-  Grid,
-} from '@material-ui/core'
-import axios from 'axios'
+import { Button, Grid, Link, TextField, Typography } from '@material-ui/core'
 import { useAuth, validateToken } from '../context/authContext'
 import { useNavigate } from 'react-router-dom'
+import { doQuery, QueryMethode } from '../utils'
 
 const Login = () => {
   const [creds, setCredentials] = useState<{ email: string; password: string }>(
@@ -23,9 +15,11 @@ const Login = () => {
   const handleSubmit = async (event) => {
     event.preventDefault()
     const credentialRoute = `${process.env.API_URL}/authentication`
-    const { data, status } = await axios
-      .post(credentialRoute, creds)
-      .catch((e) => e.response)
+    const { data, status } = await doQuery(
+      credentialRoute,
+      QueryMethode.POST,
+      creds
+    )
     if (status !== 200) {
       setError(data.message)
     } else {

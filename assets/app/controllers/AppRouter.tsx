@@ -6,7 +6,7 @@ import {
 } from 'react-router-dom'
 import App from './App'
 import Login from '../components/login'
-import TeamList from '../components/Teams/List'
+import PlayerDataTable from '../components/Players/PlayerDataTable'
 const appRouter = createBrowserRouter([
   {
     path: '/',
@@ -14,7 +14,7 @@ const appRouter = createBrowserRouter([
   },
   {
     path: '/dashboard',
-    element: <TeamList />,
+    element: <PlayerDataTable />,
   },
 ])
 
