@@ -9,8 +9,9 @@ import TablePagination from '@mui/material/TablePagination'
 import TableRow from '@mui/material/TableRow'
 import { doQuery } from '../../utils'
 import { useEffect, useState } from 'react'
-import { Box, Grid, LinearProgress, Typography } from '@mui/material'
+import { Box, Button, Grid, LinearProgress, Typography } from '@mui/material'
 import Loader from '../Loader'
+import { useNavigate } from 'react-router-dom'
 
 interface DataRowInterface {
   id: number
@@ -26,7 +27,7 @@ const TeamDataTable = () => {
   const [page, setPage] = React.useState(0)
   const [rowsPerPage, setRowsPerPage] = React.useState(10)
   const [isFetchingData, setIsFetchingData] = useState(false)
-
+  const navigate = useNavigate()
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage)
   }
@@ -36,6 +37,10 @@ const TeamDataTable = () => {
   ) => {
     setRowsPerPage(+event.target.value)
     setPage(0)
+  }
+
+  const selectRow = (e) => {
+    console.log(e)
   }
 
   const [data, setData] = useState<DataTableDataInterface>({
@@ -85,14 +90,26 @@ const TeamDataTable = () => {
                     <TableCell>Team</TableCell>
                     <TableCell>Country</TableCell>
                     <TableCell>Funds</TableCell>
+                    <TableCell>Action</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {data.teams.map((team) => (
-                    <TableRow>
+                    <TableRow hover role="checkbox" key={team.id}>
                       <TableCell>{team.name}</TableCell>
                       <TableCell>{team.isocode}</TableCell>
                       <TableCell>{team.funds}</TableCell>
+                      <TableCell>
+                        <Button
+                          variant="contained"
+                          size={'small'}
+                          onClick={(e) =>
+                            navigate(`/dashboard/team/${team.id}`)
+                          }
+                        >
+                          View players
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
