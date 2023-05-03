@@ -27,6 +27,11 @@ const TeamDataTable = () => {
   const [page, setPage] = React.useState(0)
   const [rowsPerPage, setRowsPerPage] = React.useState(10)
   const [isFetchingData, setIsFetchingData] = useState(false)
+  const [data, setData] = useState<DataTableDataInterface>({
+    teams: [],
+    count: 0,
+  })
+
   const navigate = useNavigate()
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage)
@@ -42,11 +47,6 @@ const TeamDataTable = () => {
   const selectRow = (e) => {
     console.log(e)
   }
-
-  const [data, setData] = useState<DataTableDataInterface>({
-    teams: [],
-    count: 0,
-  })
 
   useEffect(() => {
     const url = `${process.env.API_URL}/teams/?page=${
