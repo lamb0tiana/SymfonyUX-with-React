@@ -3,8 +3,11 @@
 namespace App\Repository;
 
 use App\Entity\Player;
+use App\Entity\PlayerTeam;
+use App\Entity\Team;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * @extends ServiceEntityRepository<Player>
@@ -16,7 +19,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class PlayerRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private RequestStack $requestStack)
     {
         parent::__construct($registry, Player::class);
     }
@@ -39,28 +42,25 @@ class PlayerRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Player[] Returns an array of Player objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('p.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
 
-//    public function findOneBySomeField($value): ?Player
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function queryPlayer(): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $playerTable = $this->_em->getClassMetadata($this->_entityName)->getTableName();
+        $teamTable = $this->_em->getClassMetadata(Team::class)->getTableName();
+        $playerTeamTable = $this->_em->getClassMetadata(PlayerTeam::class)->getTableName();
+        $sql = sprintf('select
+                    p.id,p.name ,p.surname ,
+                    t.id ,t.name ,t.country_code ,t.money_balance
+                from
+                    %s pt
+                inner join %s p on
+                    pt.player_id = p.id
+                INNER JOIN %s t on
+                    pt.team_id = t.id', $playerTeamTable, $playerTable, $teamTable);
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery();
+        return $resultSet->fetchAllAssociative();
+
+    }
 }
