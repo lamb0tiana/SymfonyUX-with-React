@@ -13,17 +13,30 @@ const Layout = () => {
     dispatch({ token: null })
     navigate('/')
   }
+  const login = () => navigate('/login')
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
           <Toolbar>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              Team
-            </Typography>
-            <Button color="inherit">
-              {token ? <LogoutIcon onClick={logout} /> : <LoginOutlined />}
-            </Button>
+            <Box
+              sx={{
+                marginLeft: 'auto',
+              }}
+            >
+              <Button color="inherit">
+                {token ? (
+                  <Typography onClick={logout} component={'span'}>
+                    {' '}
+                    <LogoutIcon /> Logout
+                  </Typography>
+                ) : (
+                  <Typography onClick={login}>
+                    <LoginOutlined /> LogIn
+                  </Typography>
+                )}
+              </Button>
+            </Box>
           </Toolbar>
         </AppBar>
       </Box>
