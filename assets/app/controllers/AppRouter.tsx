@@ -25,7 +25,7 @@ import Layout from './Layout'
 const appRouter = createBrowserRouter([
   {
     path: '/',
-    element: <App />,
+    element: <TeamDataTable />,
   },
   {
     path: '/dashboard',
