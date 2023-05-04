@@ -8,7 +8,7 @@ type TeamType = {
   countryCode: string
   moneyBalance: number
 }
-type Payload = {
+type PayloadType = {
   exp: number
   roles: Array<string>
   id: number
@@ -17,14 +17,14 @@ type Payload = {
 }
 interface AuthContextInterface {
   token: string | null
-  payloads: object
+  payloads: PayloadType | null
   dispatch: Function
 }
 
 const defaultValue = {
   token: null,
   dispatch: (token: string) => token,
-  payloads: {},
+  payloads: null,
 }
 
 const AuthContext: React.Context<AuthContextInterface> =
@@ -36,7 +36,7 @@ const AuthWrapperContextComponent = ({ children }) => {
     return {
       ...state,
       payloads: state.token
-        ? jwt_decode<Payload>(state.token)
+        ? jwt_decode<PayloadType>(state.token)
         : defaultValue.payloads,
     }
   }, defaultValue)
@@ -66,4 +66,4 @@ const validateToken = (token: string | null): boolean => {
   }
   return false
 }
-export { useAuth, validateToken }
+export { useAuth, validateToken, AuthContextInterface, PayloadType }

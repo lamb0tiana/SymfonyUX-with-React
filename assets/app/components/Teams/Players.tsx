@@ -11,6 +11,7 @@ import TableCell from '@mui/material/TableCell'
 import TableBody from '@mui/material/TableBody'
 import TablePagination from '@mui/material/TablePagination'
 import { doQuery } from '../../utils'
+import { AuthContextInterface, useAuth } from '../../context/authContext'
 type PlayerType = {
   id: number
   name: string
@@ -20,7 +21,9 @@ const Players = () => {
   const { id: teamId } = useParams()
   const [isFetchingData, setIsFetchingData] = useState(false)
   const [data, setData] = useState<PlayerType[]>([])
+  const { dispatch, payloads } = useAuth()
   useEffect(() => {
+    dispatch({ token: localStorage.getItem('app_token') })
     const url = `${process.env.API_URL}/teams/${teamId}/players`
     setIsFetchingData(true)
     doQuery(url).then(({ data }) => {
@@ -67,8 +70,12 @@ const Players = () => {
                       <TableCell>{_data.name}</TableCell>
                       <TableCell>{_data.surname}</TableCell>
                       <TableCell>
-                        <Button variant="contained" size={'small'}>
-                          View players
+                        <Button
+                          variant="contained"
+                          size={'small'}
+                          disabled={!payloads?.team?.id}
+                        >
+                          Buy player
                         </Button>
                       </TableCell>
                     </TableRow>
