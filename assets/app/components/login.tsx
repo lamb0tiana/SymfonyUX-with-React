@@ -8,30 +8,44 @@ const Login = () => {
   const [creds, setCredentials] = useState<{ email: string; password: string }>(
     { email: 'demo@dev.mg', password: 'demo' }
   )
-  const [error, setError] = useState<string>(null)
+  const [errors, setErrors] = useState<string[]>([])
   const [isRegister, setIsRegister] = useState<boolean>(false)
   const navigate = useNavigate()
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    const credentialRoute = `${process.env.API_URL}/authentication`
+    const credentialRoute = `${process.env.API_URL}/${
+      isRegister ? 'manager/create' : 'authentication'
+    }`
     const { data, status } = await doQuery(
       credentialRoute,
       QueryMethode.POST,
       creds
     )
-    if (status !== 200) {
-      setError(data.message)
-    } else {
-      const { token } = data
-      validateToken(token) && navigate('/')
+    let response = []
+    switch (status) {
+      case 400:
+        response.push(data.errors)
+        break
+      case 401:
+        response.push(data.message)
+        break
+      default:
+        const { token } = data
+        validateToken(token) && navigate('/')
     }
+
+    response.length > 0 && setErrors(response)
   }
 
   const handleFieldChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name } = e.target
     setCredentials({ ...creds, [name]: e.target.value })
   }
+
+  useEffect(() => {
+    setErrors([])
+  }, [isRegister])
 
   useEffect(() => {
     const token = localStorage.getItem('app_token')
@@ -49,11 +63,16 @@ const Login = () => {
       }}
     >
       <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: 400 }}>
-        {error && (
-          <Typography variant="body1" color="error" align={'center'}>
+        {errors.map((error, index) => (
+          <Typography
+            key={index}
+            variant="body1"
+            color="error"
+            align={'center'}
+          >
             {error}
           </Typography>
-        )}
+        ))}
         <Typography variant="h4" align="center" gutterBottom>
           {isRegister ? 'New account manager' : 'Manager login'}
         </Typography>
