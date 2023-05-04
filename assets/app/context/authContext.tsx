@@ -4,27 +4,30 @@ import jwt_decode from 'jwt-decode'
 import axios from 'axios'
 interface AuthContextInterface {
   token: string | null
+  payloads: object
   dispatch: Function
 }
 
 const defaultValue = {
   token: null,
   dispatch: (token: string) => token,
+  payloads: {},
 }
 
 const AuthContext: React.Context<AuthContextInterface> =
   React.createContext<AuthContextInterface>(defaultValue)
 
 const AuthWrapperContextComponent = ({ children }) => {
-  const [{ token }, dispatch] = useReducer(
-    (stateA, statB) => ({ ...stateA, ...statB }),
-    defaultValue
-  )
+  const [{ token, payloads }, dispatch] = useReducer((stateA, statB) => {
+    const state: AuthContextInterface = { ...stateA, ...statB }
+    return {
+      ...state,
+      payloads: state.token ? jwt_decode(state.token) : {},
+    }
+  }, defaultValue)
 
   return (
-    <AuthContext.Provider value={{ token, dispatch }}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={defaultValue}>{children}</AuthContext.Provider>
   )
 }
 

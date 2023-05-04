@@ -108,9 +108,7 @@ const TeamDataTable = () => {
                         <Button
                           variant="contained"
                           size={'small'}
-                          onClick={(e) =>
-                            navigate(`/dashboard/team/${team.id}`)
-                          }
+                          onClick={(e) => navigate(`/team/${team.id}`)}
                         >
                           View players
                         </Button>

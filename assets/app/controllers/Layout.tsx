@@ -1,10 +1,10 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Outlet } from 'react-router-dom'
 import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material'
 import LogoutIcon from '@mui/icons-material/Logout'
 import React from 'react'
 import { useAuth } from '../context/authContext'
 
-const Layout = ({ children }) => {
+const Layout = () => {
   const navigate = useNavigate()
   const { dispatch } = useAuth()
   const logout = () => {
@@ -26,8 +26,7 @@ const Layout = ({ children }) => {
           </Toolbar>
         </AppBar>
       </Box>
-
-      {children}
+      <Outlet />
     </>
   )
 }
