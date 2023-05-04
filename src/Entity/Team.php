@@ -12,6 +12,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\Country;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Type;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 #[ORM\Entity(repositoryClass: TeamRepository::class)]
 #[Gedmo]
@@ -46,6 +47,11 @@ class Team implements TraceableErrors
 
     #[ORM\OneToOne(mappedBy: 'team', cascade: ['persist', 'remove'])]
     private ?TeamManager $teamManager = null;
+
+    #[ORM\Column(length: 128, unique: true)]
+    #[Gedmo\Slug(fields: ['name'])]
+    #[Groups(['read'])]
+    private ?string $slug = null;
 
     public function __construct()
     {
@@ -141,6 +147,18 @@ class Team implements TraceableErrors
         }
 
         $this->teamManager = $teamManager;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
 
         return $this;
     }

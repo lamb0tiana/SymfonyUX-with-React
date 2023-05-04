@@ -99,22 +99,36 @@ const TeamDataTable = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {data.teams.map((team) => (
-                    <TableRow hover role="checkbox" key={team.id}>
-                      <TableCell>{team.name}</TableCell>
-                      <TableCell>{team.isocode}</TableCell>
-                      <TableCell>{team.funds}</TableCell>
-                      <TableCell>
-                        <Button
-                          variant="contained"
-                          size={'small'}
-                          onClick={(e) => navigate(`/team/${team.id}`)}
+                  {data.teams.length > 0 ? (
+                    data.teams.map((team) => (
+                      <TableRow hover role="checkbox" key={team.id}>
+                        <TableCell>{team.name}</TableCell>
+                        <TableCell>{team.isocode}</TableCell>
+                        <TableCell>{team.funds}</TableCell>
+                        <TableCell>
+                          <Button
+                            variant="contained"
+                            size={'small'}
+                            onClick={(e) => navigate(`/team/${team.id}`)}
+                          >
+                            View players
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={4} sx={{ textAlign: 'center' }}>
+                        <Typography
+                          component={'span'}
+                          fontStyle={'italic'}
+                          color={'#808080'}
                         >
-                          View players
-                        </Button>
+                          No team available
+                        </Typography>
                       </TableCell>
                     </TableRow>
-                  ))}
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>
