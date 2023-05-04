@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import Paper from '@mui/material/Paper'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -19,6 +19,7 @@ interface DataRowInterface {
   name: string
   isocode: string
   funds: number
+  slug: string
 }
 interface DataTableDataInterface {
   teams: Array<DataRowInterface>
@@ -109,7 +110,7 @@ const TeamDataTable = () => {
                           <Button
                             variant="contained"
                             size={'small'}
-                            onClick={(e) => navigate(`/team/${team.id}`)}
+                            onClick={(e) => navigate(`/team/${team.slug}`)}
                           >
                             View players
                           </Button>

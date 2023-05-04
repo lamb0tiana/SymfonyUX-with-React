@@ -55,7 +55,7 @@ class TeamRepository extends ServiceEntityRepository
 
         $teamTable = $this->_em->getClassMetadata($this->_entityName)->getTableName();
         $offset = ($offset -1) * $limit;
-        $sql = sprintf('SELECT id, name, country_code isocode, money_balance funds from %s limit %d,%d', $teamTable, $offset, $limit);
+        $sql = sprintf('SELECT id, name, country_code isocode, money_balance funds, slug from %s limit %d,%d', $teamTable, $offset, $limit);
         $data = $this->query($sql);
 
         $aggregationQuery = sprintf('SELECT count(*) totalRow from %s', $teamTable);
