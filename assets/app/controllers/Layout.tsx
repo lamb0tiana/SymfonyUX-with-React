@@ -10,7 +10,7 @@ import {
 } from '../context/authContext'
 import { LoginOutlined } from '@mui/icons-material'
 import jwt_decode from 'jwt-decode'
-
+import './layout.scss'
 const Layout = () => {
   const navigate = useNavigate()
   const { dispatch, token, payloads } = useAuth()
@@ -58,11 +58,11 @@ const Layout = () => {
                 {token ? (
                   <Typography onClick={logout} component={'span'}>
                     {' '}
-                    <LogoutIcon /> Logout
+                    <LogoutIcon className={'userActionMenu'} /> Logout
                   </Typography>
                 ) : (
-                  <Typography onClick={login}>
-                    <LoginOutlined /> LogIn
+                  <Typography onClick={login} component={'span'}>
+                    <LoginOutlined className={'userActionMenu'} /> LogIn
                   </Typography>
                 )}
               </Button>
