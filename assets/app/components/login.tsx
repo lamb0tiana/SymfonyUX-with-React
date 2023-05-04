@@ -23,7 +23,7 @@ const Login = () => {
       setError(data.message)
     } else {
       const { token } = data
-      validateToken(token) && navigate('/dashboard')
+      validateToken(token) && navigate('/')
     }
   }
 
@@ -31,6 +31,11 @@ const Login = () => {
     const { name } = e.target
     setCredentials({ ...creds, [name]: e.target.value })
   }
+  useEffect(() => {
+    const token = localStorage.getItem('app_token')
+    const isValidToken = validateToken(token)
+    if (isValidToken) navigate('/')
+  }, [])
 
   return (
     <div

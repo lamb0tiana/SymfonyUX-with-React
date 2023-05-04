@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class HomeController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    #[Route('/dashboard', name: 'dashboard')]
+    #[Route('/login', name: 'login')]
     #[Route('/dashboard/team/{id}', name: 'teamview', requirements: ['id' => '^\d+$'])]
     public function index(Request $request)
     {
