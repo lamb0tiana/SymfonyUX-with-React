@@ -34,7 +34,6 @@ class TeamManager implements UserInterface, PasswordAuthenticatedUserInterface, 
      * @var string The hashed password
      */
     #[ORM\Column]
-    #[Groups(['read'])]
     #[Length(min: 4, minMessage: 'Your email should be at least 4 characters')]
     private ?string $password = null;
 
