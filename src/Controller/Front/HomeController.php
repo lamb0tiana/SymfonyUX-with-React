@@ -10,7 +10,7 @@ class HomeController extends AbstractController
 {
     #[Route('/', name: 'index')]
     #[Route('/login', name: 'login')]
-    #[Route('/dashboard/team/{id}', name: 'teamview', requirements: ['id' => '^\d+$'])]
+    #[Route('/team/{id}', name: 'teamview', requirements: ['id' => '^\d+$'])]
     public function index(Request $request)
     {
         return $this->render('app.html.twig');

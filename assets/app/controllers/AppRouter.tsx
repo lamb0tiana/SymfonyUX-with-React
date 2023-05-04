@@ -24,23 +24,25 @@ import Layout from './Layout'
 const appRouter = createBrowserRouter([
   {
     path: '/',
-    element: <TeamDataTable />,
-  },
-  {
-    path: '/login',
-    element: <Login />,
-  },
-  {
-    path: '/dashboard/team/:id',
-    element: <Players />,
+    element: <Layout />,
+    children: [
+      {
+        path: 'login',
+        element: <Login />,
+      },
+      {
+        path: 'team/:id',
+        element: <Players />,
+      },
+      {
+        index: true,
+        element: <TeamDataTable />,
+      },
+    ],
   },
 ])
 
 const AppRouter = () => {
-  return (
-    <AuthWrapperContextComponent>
-      <RouterProvider router={appRouter} fallbackElement={'loading'} />
-    </AuthWrapperContextComponent>
-  )
+  return <RouterProvider router={appRouter} fallbackElement={'loading'} />
 }
 export default AppRouter
