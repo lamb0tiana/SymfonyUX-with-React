@@ -27,8 +27,9 @@ class TransfertPlayerValidator extends ConstraintValidator
         /** @var Player $player */
         $player = $this->request->getCurrentRequest()->attributes->get('player');
 
+        /** @var Team $owner */
         $owner = $this->manager->getRepository(PlayerTeam::class)->getTeamOfPlayer($player);
-        if ($owner && $owner !== $team && $team->getMoneyBalance() < $value) {
+        if ($team && $owner && $owner->getId() !== $team->getId() && $team->getMoneyBalance() < $value) {
             $message = sprintf('The team %s have no sufficient funds for this transfert, current funds [%d$]', $team->getName(), $team->getMoneyBalance());
             $this->context->buildViolation($message)
                 ->addViolation();
