@@ -5,11 +5,14 @@ namespace App\Controller\Api;
 use App\Entity\Player;
 use App\Entity\PlayerTeam;
 use App\Entity\Team;
+use App\Entity\TeamManager;
 use App\Repository\TeamRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 
 #[Route('/teams')]
@@ -33,11 +36,8 @@ class TeamController extends BaseApiController
 
     private function validateTransfertRequest(Request $request): JsonResponse
     {
-        [$teamId, $playerId] = array_values($request->attributes->get('_route_params'));
-        if (!$request->attributes->get('team')) {
-            $contentResponse = ["error"=> sprintf('Team with id %d not found', $teamId)];
-            return $this->json($contentResponse, Response::HTTP_NOT_FOUND);
-        }
+        [ $playerId] = array_values($request->attributes->get('_route_params'));
+
 
         if (!$request->attributes->get('player')) {
             $contentResponse = ["error" => sprintf('Player with id %d not found', $playerId)];
@@ -57,10 +57,18 @@ class TeamController extends BaseApiController
     /**
      * @throws \Symfony\Component\Serializer\Exception\ExceptionInterface
      */
-    #[Route('/{team}/setPlayer/{player}', name: 'add_player', methods: Request::METHOD_POST)]
-    public function addPlayer(Request $request, ?Team $team = null, ?Player $player = null): JsonResponse
+    #[Route('/setPlayer/{player}', name: 'add_player', methods: Request::METHOD_POST)]
+    public function addPlayer(#[CurrentUser] ?TeamManager $teamManager, Request $request, ?Player $player = null): JsonResponse
     {
         $validationQuery = $this->validateTransfertRequest($request);
+        $team = $teamManager->getTeam();
+
+        if (!$team) {
+            return $this->json([['message' => 'You have no team set', 'error_field' =>'team' ]], Response::HTTP_NOT_FOUND);
+        }
+        $teamRepository = $this->manager->getRepository(Team::class);
+        $team = $teamRepository->find($team->getId());
+
         if ($validationQuery->getStatusCode() !== Response::HTTP_OK) {
             return $this->json(json_decode($validationQuery->getContent()), $validationQuery->getStatusCode());
         }
@@ -88,7 +96,8 @@ class TeamController extends BaseApiController
         }
     }
 
-    #[Route("/{team}/players", name: 'get_team_players', methods: Request::METHOD_GET)]
+    #[Route("/{slug}/players", name: 'get_team_players', methods: Request::METHOD_GET)]
+    #[Entity("team", expr: "repository.findOneBySlug(slug)")]
     public function getPlayers(Team $team, TeamRepository $repository): JsonResponse
     {
         $data = $repository->getPlayerList($team);

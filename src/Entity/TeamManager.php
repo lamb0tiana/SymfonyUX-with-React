@@ -119,8 +119,23 @@ class TeamManager implements UserInterface, PasswordAuthenticatedUserInterface, 
 
     public static function createFromPayload($username, array $payload)
     {
-        return (new self(
+
+
+        $user = (new self(
         ))->setRoles($payload['roles'])->setEmail($payload['email'])->setId($payload['id']);
+
+        if ($payload['team']) {
+            $dataTeam = $payload['team'];
+            ['id' => $id, 'name' => $name, 'countryCode' => $isoCode, 'moneyBalance' => $funds, 'slug' => $slug] = $dataTeam;
+            $team = (new Team())->setId($dataTeam['id'])
+                ->setMoneyBalance($funds)
+                ->setSlug($slug)
+            ->setCountryCode($isoCode)
+            ->setName($name);
+            $user->setTeam($team);
+        }
+
+        return $user;
     }
 
     public function getTeam(): ?Team

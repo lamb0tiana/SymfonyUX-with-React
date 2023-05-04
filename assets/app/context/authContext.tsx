@@ -7,6 +7,7 @@ type TeamType = {
   name: string
   countryCode: string
   moneyBalance: number
+  slug: string
 }
 type PayloadType = {
   exp: number
