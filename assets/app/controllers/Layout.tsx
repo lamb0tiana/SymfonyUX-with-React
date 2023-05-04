@@ -3,10 +3,11 @@ import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material'
 import LogoutIcon from '@mui/icons-material/Logout'
 import React from 'react'
 import { useAuth } from '../context/authContext'
+import { LoginOutlined } from '@mui/icons-material'
 
 const Layout = () => {
   const navigate = useNavigate()
-  const { dispatch } = useAuth()
+  const { dispatch, token, payloads } = useAuth()
   const logout = () => {
     localStorage.removeItem('app_token')
     dispatch({ token: null })
@@ -21,7 +22,7 @@ const Layout = () => {
               Team
             </Typography>
             <Button color="inherit">
-              <LogoutIcon onClick={logout} />
+              {token ? <LogoutIcon onClick={logout} /> : <LoginOutlined />}
             </Button>
           </Toolbar>
         </AppBar>

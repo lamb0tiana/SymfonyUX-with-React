@@ -2,6 +2,19 @@ import React, { useContext, useReducer } from 'react'
 import jwt_decode from 'jwt-decode'
 
 import axios from 'axios'
+type TeamType = {
+  id: number
+  name: string
+  countryCode: string
+  moneyBalance: number
+}
+type Payload = {
+  exp: number
+  roles: Array<string>
+  id: number
+  email: string
+  team: TeamType
+}
 interface AuthContextInterface {
   token: string | null
   payloads: object
@@ -22,12 +35,16 @@ const AuthWrapperContextComponent = ({ children }) => {
     const state: AuthContextInterface = { ...stateA, ...statB }
     return {
       ...state,
-      payloads: state.token ? jwt_decode(state.token) : {},
+      payloads: state.token
+        ? jwt_decode<Payload>(state.token)
+        : defaultValue.payloads,
     }
   }, defaultValue)
 
   return (
-    <AuthContext.Provider value={defaultValue}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ token, payloads, dispatch }}>
+      {children}
+    </AuthContext.Provider>
   )
 }
 
