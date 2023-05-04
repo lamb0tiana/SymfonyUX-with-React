@@ -43,6 +43,7 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/api/authentication, roles: PUBLIC_ACCESS }
+        - { path: ^/api/manager/create, roles: PUBLIC_ACCESS }
         - { path: ^/api/teams/((\?.+)|(\d+/players))?$,       roles: PUBLIC_ACCESS }
         - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
 

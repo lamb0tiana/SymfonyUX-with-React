@@ -5,11 +5,17 @@ namespace App\Entity;
 use App\Repository\TeamManagerRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Lexik\Bundle\JWTAuthenticationBundle\Security\User\JWTUserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[ORM\Entity(repositoryClass: TeamManagerRepository::class)]
-class TeamManager implements UserInterface, PasswordAuthenticatedUserInterface, JWTUserInterface
+#[UniqueEntity(fields: ['email'], message: 'Email already taken')]
+class TeamManager implements UserInterface, PasswordAuthenticatedUserInterface, JWTUserInterface, TraceableErrors
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -17,6 +23,8 @@ class TeamManager implements UserInterface, PasswordAuthenticatedUserInterface, 
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Groups(['read'])]
+    #[Email(message: 'invalid email')]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -26,6 +34,8 @@ class TeamManager implements UserInterface, PasswordAuthenticatedUserInterface, 
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Groups(['read'])]
+    #[Length(min: 4, minMessage: 'Your email should be at least 4 characters')]
     private ?string $password = null;
 
     #[ORM\OneToOne(inversedBy: 'teamManager', cascade: ['persist', 'remove'])]
