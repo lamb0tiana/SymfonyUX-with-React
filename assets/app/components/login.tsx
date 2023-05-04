@@ -9,6 +9,7 @@ const Login = () => {
     { email: 'demo@dev.mg', password: 'demo' }
   )
   const [error, setError] = useState<string>(null)
+  const [isRegister, setIsRegister] = useState<boolean>(false)
   const navigate = useNavigate()
 
   const handleSubmit = async (event) => {
@@ -31,6 +32,7 @@ const Login = () => {
     const { name } = e.target
     setCredentials({ ...creds, [name]: e.target.value })
   }
+
   useEffect(() => {
     const token = localStorage.getItem('app_token')
     const isValidToken = validateToken(token)
@@ -53,7 +55,7 @@ const Login = () => {
           </Typography>
         )}
         <Typography variant="h4" align="center" gutterBottom>
-          Manager login
+          {isRegister ? 'New account manager' : 'Manager login'}
         </Typography>
         <TextField
           value={creds.email}
@@ -87,12 +89,16 @@ const Login = () => {
           color="primary"
           style={{ marginTop: '1rem' }}
         >
-          Login
+          {isRegister ? 'Register' : 'Login'}
         </Button>
         <Grid container style={{ marginTop: '1rem' }} justifyContent={'center'}>
           <Grid item>
-            <Link href="#" variant="body2">
-              New account ?
+            <Link
+              href="#"
+              variant="body2"
+              onClick={() => setIsRegister(!isRegister)}
+            >
+              {isRegister ? 'Connexion' : 'New account ?'}
             </Link>
           </Grid>
         </Grid>
