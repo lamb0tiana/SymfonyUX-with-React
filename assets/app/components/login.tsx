@@ -2,7 +2,7 @@ import React, { ChangeEvent, useEffect, useState } from 'react'
 import { Button, Grid, Link, TextField, Typography } from '@material-ui/core'
 import { validateToken } from '../context/authContext'
 import { useNavigate } from 'react-router-dom'
-import { doQuery, QueryMethode } from '../utils'
+import { doQuery, QueryMethod } from '../utils'
 
 const Login = () => {
   const [creds, setCredentials] = useState<{ email: string; password: string }>(
@@ -19,7 +19,7 @@ const Login = () => {
     }`
     const { data, status } = await doQuery(
       credentialRoute,
-      QueryMethode.POST,
+      QueryMethod.POST,
       creds
     )
     let response = []

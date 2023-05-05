@@ -38,7 +38,7 @@ class TeamManager implements UserInterface, PasswordAuthenticatedUserInterface, 
     #[Length(min: 4, minMessage: 'Your email should be at least 4 characters')]
     private ?string $password = null;
 
-    #[ORM\OneToOne(inversedBy: 'teamManager', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'teamManager', cascade: ['persist', 'remove'], fetch: 'EAGER')]
     private ?Team $team = null;
 
     public function getId(): ?int
