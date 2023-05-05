@@ -11,6 +11,7 @@ import {
 import { LoginOutlined } from '@mui/icons-material'
 import jwt_decode from 'jwt-decode'
 import './layout.scss'
+import CreateTeamModal from '../components/Teams/CreateTeamModal'
 const Layout = () => {
   const navigate = useNavigate()
   const { dispatch, token, payloads } = useAuth()
@@ -36,20 +37,10 @@ const Layout = () => {
             >
               {hasValidToken ? (
                 <>
-                  {' '}
                   <Button color={'inherit'} onClick={() => navigate('/')}>
                     <Typography component={'span'}>Teams</Typography>
-                  </Button>{' '}
+                  </Button>
                   |
-                  {!paylods?.team?.id ? (
-                    <Button color={'inherit'} onClick={() => navigate('/')}>
-                      <Typography component={'span'}>
-                        Create your team
-                      </Typography>
-                    </Button>
-                  ) : (
-                    ''
-                  )}
                 </>
               ) : (
                 ''
@@ -71,6 +62,7 @@ const Layout = () => {
         </AppBar>
       </Box>
       <Outlet />
+      {token ? <CreateTeamModal isOpen={!payloads?.team?.id} /> : ''}
     </>
   )
 }

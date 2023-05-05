@@ -13,6 +13,7 @@ import { Box, Button, Grid, LinearProgress, Typography } from '@mui/material'
 import Loader from '../Loader'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/authContext'
+import CreateTeamModal from './CreateTeamModal'
 
 interface DataRowInterface {
   id: number

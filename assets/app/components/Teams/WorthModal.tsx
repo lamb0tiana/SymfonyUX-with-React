@@ -12,24 +12,15 @@ import {
   TextField,
 } from '@mui/material'
 
-const style = {
-  position: 'absolute' as 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-}
 interface DefinitionWorthInterface {
   id: number
   worth: number | string
 }
+
 interface WorthModalRefInterface {
   handleOpen: (params: DefinitionWorthInterface) => void
 }
+
 const WorthModal = React.forwardRef<WorthModalRefInterface, {}>(
   (props, ref) => {
     const [open, setOpen] = React.useState(false)
