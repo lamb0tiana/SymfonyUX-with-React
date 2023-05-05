@@ -26,18 +26,28 @@ class BaseApiController extends AbstractController
 
     public function post(Request $request, string $type): JsonResponse
     {
-        $entity = $this->serializer->deserialize($request->getContent(), $type, 'json');
+        $post = $request->getContent();
+        try {
+            $entity = $this->serializer->deserialize($post, $type, 'json');
 
-        $errors = $this->getEntityErrors($entity);
-        if ($errors) {
-            return $this->json($errors, Response::HTTP_BAD_REQUEST);
+            $errors = $this->getEntityErrors($entity);
+            if ($errors) {
+                return $this->json($errors, Response::HTTP_BAD_REQUEST);
+            }
+
+            $this->manager->persist($entity);
+            $this->manager->flush();
+
+            $response = $this->normalizer->normalize($entity, 'json', ['groups' => ['read']]);
+
+            return $this->json($response, Response::HTTP_CREATED);
+        } catch (\Exception $e) {
+            $data = json_decode($post, true);
+            ['money_balance' => $balance] = $data;
+            if (preg_match("/[^(\d\s)]/", $balance)) {
+                $message = [['field' =>'money_balance', 'message' => 'Not a number balance given']];
+                return $this->json($message, Response::HTTP_BAD_REQUEST);
+            }
         }
-
-        $this->manager->persist($entity);
-        $this->manager->flush();
-
-        $response = $this->normalizer->normalize($entity, 'json', ['groups' => ['read']]);
-
-        return $this->json($response, Response::HTTP_CREATED);
     }
 }
