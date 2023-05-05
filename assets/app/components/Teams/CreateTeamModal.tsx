@@ -1,11 +1,9 @@
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import React, { ChangeEvent, useState } from 'react'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
 import Modal from '@mui/material/Modal'
 import {
   Autocomplete,
-  FilledInput,
   FormControl,
   Input,
   InputAdornment,
@@ -13,6 +11,9 @@ import {
   TextField,
 } from '@mui/material'
 import { getCodeList } from 'country-list'
+import { doQuery, QueryMethod } from '../../utils'
+import { Typography } from '@material-ui/core'
+import { useAuth, validateToken } from '../../context/authContext'
 
 interface CountryNames<T extends string> {
   [key: string]: T
@@ -27,6 +28,9 @@ type NewDataTeamType = {
 const CreateTeamModal = ({ isOpen }) => {
   const [open, setOpen] = React.useState(isOpen)
   const handleClose = () => setOpen(false)
+  const [errors, setErrors] = useState<string[]>([])
+  const { dispatch } = useAuth()
+
   const [formData, setFormData] = useState<NewDataTeamType>({
     balance: null,
     name: null,
@@ -37,10 +41,45 @@ const CreateTeamModal = ({ isOpen }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-  const handleSubmit = (e) => {
+  const postTeam = async () => {
+    const route = `${process.env.API_URL}/teams/create`
+    const { country: countryCode, balance: money_balance, name } = formData
+    const { data, status } = await doQuery(route, QueryMethod.POST, {
+      name,
+      money_balance,
+      countryCode: countryCode.toUpperCase(),
+    })
+
+    return { data, status }
+  }
+
+  const getRefreshedToken = async () => {
+    const route = `${process.env.API_URL}/me`
+    const { data, status } = await doQuery(route)
+    if (status === 200) {
+      return data
+    }
+    return { token: null }
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log(formData)
-    setOpen(false)
+    const { data, status } = await postTeam()
+    switch (status) {
+      case 400:
+        const _errors = data.map(({ message }) => message)
+        setErrors(_errors)
+        break
+      case 201:
+        const { token } = await getRefreshedToken()
+        if (token) {
+          validateToken(token) && dispatch({ token })
+          window.location.reload()
+        } else {
+          setErrors(['An error occured, please reload your page'])
+        }
+        break
+    }
   }
   return (
     <div>
@@ -63,9 +102,21 @@ const CreateTeamModal = ({ isOpen }) => {
         >
           <h2>Create your team</h2>
           <form onSubmit={handleSubmit}>
+            {errors.map((error, index) => (
+              <Typography
+                key={index}
+                variant="body1"
+                color="error"
+                align={'center'}
+              >
+                {error}
+              </Typography>
+            ))}
             <FormControl fullWidth sx={{ m: 1 }} variant="standard">
               <InputLabel htmlFor="name">Name</InputLabel>
               <Input
+                aria-required
+                required
                 autoComplete={'off'}
                 id="name"
                 onChange={handleChangeField}
@@ -75,6 +126,7 @@ const CreateTeamModal = ({ isOpen }) => {
             </FormControl>
             <FormControl fullWidth sx={{ m: 1 }} variant="standard">
               <Autocomplete
+                aria-required
                 id="country-selection"
                 isOptionEqualToValue={(option, value) => option[0] === value[0]}
                 options={Object.entries(countries)}
@@ -106,6 +158,8 @@ const CreateTeamModal = ({ isOpen }) => {
                 }}
                 renderInput={(params) => (
                   <TextField
+                    required
+                    aria-required
                     {...params}
                     label="Choose a country"
                     inputProps={{
@@ -123,6 +177,7 @@ const CreateTeamModal = ({ isOpen }) => {
                 Money balance
               </InputLabel>
               <Input
+                required
                 autoComplete={'off'}
                 value={formData.balance || ''}
                 id="standard-adornment-amount"

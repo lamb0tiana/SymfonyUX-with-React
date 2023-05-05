@@ -1,11 +1,11 @@
 import axios from 'axios'
-enum QueryMethode {
+enum QueryMethod {
   POST = 'post',
   GET = 'get',
 }
 const doQuery = async (
   route: string,
-  method = QueryMethode.GET,
+  method = QueryMethod.GET,
   payloads: unknown = null
 ): Promise<{ data: any; status: number }> => {
   const { data, status } = await axios[method](route, payloads).catch(
@@ -20,4 +20,4 @@ const getRandomInt = (min, max) => {
   max = Math.floor(max)
   return Math.floor(Math.random() * (max - min) + min)
 }
-export { doQuery, QueryMethode, getRandomInt }
+export { doQuery, QueryMethod, getRandomInt }
