@@ -27,7 +27,7 @@ const appRouter = createBrowserRouter([
     element: <Layout />,
     children: [
       {
-        path: 'team/:id',
+        path: 'team/:slug',
         element: <Players />,
       },
       {

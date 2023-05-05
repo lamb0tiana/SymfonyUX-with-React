@@ -1,5 +1,5 @@
 import { Routes, Route, useParams } from 'react-router-dom'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef, createRef, RefObject } from 'react'
 import { Button, Grid, InputLabel, Typography } from '@mui/material'
 import Loader from '../Loader'
 import Paper from '@mui/material/Paper'
@@ -12,21 +12,23 @@ import TableBody from '@mui/material/TableBody'
 import TablePagination from '@mui/material/TablePagination'
 import { doQuery, getRandomInt } from '../../utils'
 import { AuthContextInterface, useAuth } from '../../context/authContext'
+import WorthModal, { DefinitionWorthInterface } from './WorthModal'
 type PlayerType = {
   id: number
   name: string
   surname: string
+  worth: number
 }
 const Players = () => {
-  const { id: teamId } = useParams()
+  const { slug } = useParams()
   const [isFetchingData, setIsFetchingData] = useState(false)
   const [data, setData] = useState<PlayerType[]>([])
   const { dispatch, payloads } = useAuth()
   const hasTeam: boolean = payloads?.team?.id != null
-
+  const [isOwner, setIsOwner] = useState<boolean>(false)
   useEffect(() => {
     dispatch({ token: localStorage.getItem('app_token') })
-    const url = `${process.env.API_URL}/teams/${teamId}/players`
+    const url = `${process.env.API_URL}/teams/${slug}/players`
     setIsFetchingData(true)
     doQuery(url).then(({ data }) => {
       setData(data)
@@ -34,6 +36,13 @@ const Players = () => {
     })
   }, [])
 
+  useEffect(() => {
+    setIsOwner(slug === payloads?.team?.slug)
+  }, [payloads])
+
+  const myRef: React.RefObject<{
+    handleOpen: (params: DefinitionWorthInterface) => void
+  }> = useRef(null)
   return (
     <Grid>
       <Typography
@@ -68,19 +77,29 @@ const Players = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {data.map((_data) => (
-                    <TableRow key={_data.id}>
-                      <TableCell>{_data.name}</TableCell>
-                      <TableCell>{_data.surname}</TableCell>
+                  {data.map(({ id, name, surname, worth }) => (
+                    <TableRow key={id}>
+                      <TableCell>{name}</TableCell>
+                      <TableCell>{surname}</TableCell>
                       <TableCell>
                         <Button
+                          color={isOwner ? 'success' : 'primary'}
                           variant="contained"
                           size={'small'}
                           disabled={!hasTeam}
+                          onClick={() =>
+                            myRef.current.handleOpen({ id, worth })
+                          }
                         >
-                          Buy player
+                          {`${
+                            isOwner
+                              ? worth
+                                ? 'Edit worth'
+                                : 'Sell player'
+                              : 'Buy player'
+                          }`}
                         </Button>
-                        {hasTeam ? (
+                        {hasTeam && worth ? (
                           <Typography
                             ml={2}
                             component={'span'}
@@ -92,10 +111,7 @@ const Players = () => {
                               borderRadius: '2px',
                             }}
                           >
-                            $
-                            {getRandomInt(100000, 500000).toLocaleString(
-                              'en-US'
-                            )}
+                            ${worth.toLocaleString('en-US')}
                           </Typography>
                         ) : (
                           ''
@@ -111,6 +127,7 @@ const Players = () => {
           <Typography>No player available</Typography>
         )}
       </div>
+      <WorthModal ref={myRef} />
     </Grid>
   )
 }
