@@ -13,6 +13,7 @@ import TablePagination from '@mui/material/TablePagination'
 import { doQuery, getRandomInt } from '../../utils'
 import { AuthContextInterface, useAuth } from '../../context/authContext'
 import WorthModal, { DefinitionWorthInterface } from './WorthModal'
+import CreateTeamModal from './CreateTeamModal'
 type PlayerType = {
   id: number
   name: string
@@ -23,7 +24,7 @@ const Players = () => {
   const { slug } = useParams()
   const [isFetchingData, setIsFetchingData] = useState(false)
   const [data, setData] = useState<PlayerType[]>([])
-  const { dispatch, payloads } = useAuth()
+  const { dispatch, payloads, token } = useAuth()
   const hasTeam: boolean = payloads?.team?.id != null
   const [isOwner, setIsOwner] = useState<boolean>(false)
   useEffect(() => {
@@ -128,6 +129,7 @@ const Players = () => {
         )}
       </div>
       <WorthModal ref={myRef} />
+      {token ? <CreateTeamModal isOpen={!payloads?.team?.id} /> : ''}
     </Grid>
   )
 }

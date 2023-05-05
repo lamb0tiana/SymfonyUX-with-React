@@ -30,7 +30,7 @@ const TeamDataTable = () => {
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [isFetchingData, setIsFetchingData] = useState(false)
-  const { dispatch } = useAuth()
+  const { dispatch, token, payloads } = useAuth()
   const [data, setData] = useState<DataTableDataInterface>({
     teams: [],
     count: 0,
@@ -146,6 +146,7 @@ const TeamDataTable = () => {
           </Paper>
         )}
       </div>
+      {token ? <CreateTeamModal isOpen={!payloads?.team?.id} /> : ''}
     </Grid>
   )
 }

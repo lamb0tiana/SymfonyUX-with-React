@@ -62,7 +62,6 @@ const Layout = () => {
         </AppBar>
       </Box>
       <Outlet />
-      {token ? <CreateTeamModal isOpen={!payloads?.team?.id} /> : ''}
     </>
   )
 }
