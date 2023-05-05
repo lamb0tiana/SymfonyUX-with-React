@@ -36,6 +36,11 @@ class Player implements TraceableErrors
     #[ORM\OneToMany(mappedBy: 'player', targetEntity: PlayerTeam::class, orphanRemoval: true)]
     private Collection $playerTeams;
 
+    #[ORM\Column(length: 128, unique: true)]
+    #[Gedmo\Slug(fields: ['name', 'surname'])]
+    #[Groups(['read'])]
+    private ?string $slug = null;
+
     public function __construct()
     {
         $this->playerTeams = new ArrayCollection();
@@ -96,6 +101,18 @@ class Player implements TraceableErrors
                 $playerTeam->setPlayer(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
 
         return $this;
     }
