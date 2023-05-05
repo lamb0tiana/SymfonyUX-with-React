@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Validator;
+namespace App\Validator\Player;
 
 use App\Entity\Player;
 use App\Entity\PlayerTeam;
@@ -21,8 +21,9 @@ class TransfertPlayerValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         /** @var TeamManager $currentUser */
-        $currentUser = $this->security->getUser();
-
+        $user = $this->security->getUser();
+        $managerRepository = $this->manager->getRepository(TeamManager::class);
+        $currentUser = $managerRepository->find($user->getId());
         $team = $currentUser->getTeam();
         /** @var Player $player */
         $player = $this->request->getCurrentRequest()->attributes->get('player');

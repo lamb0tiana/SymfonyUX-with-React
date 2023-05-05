@@ -9,11 +9,12 @@ use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class DoctrineSubscriber implements EventSubscriber
 {
-    public function __construct(private EntityManagerInterface $entityManager, private UserPasswordHasherInterface $passwordHasher)
+    public function __construct(private EntityManagerInterface $entityManager, private UserPasswordHasherInterface $passwordHasher, private Security $user)
     {
     }
 
@@ -31,6 +32,12 @@ class DoctrineSubscriber implements EventSubscriber
             }
         } elseif ($entity instanceof TeamManager) {
             $this->handlePassword($entity);
+        } elseif ($entity instanceof Team) {
+            $repository = $this->entityManager->getRepository(TeamManager::class);
+            /** @var TeamManager $user */
+            $user = $this->user->getUser();
+            $teamManager = $repository->find($user->getId());
+            $entity->setTeamManager($teamManager);
         }
     }
 

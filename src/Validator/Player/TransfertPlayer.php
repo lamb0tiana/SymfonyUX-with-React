@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Validator;
+namespace App\Validator\Player;
 
 use Symfony\Component\Validator\Constraint;
 
