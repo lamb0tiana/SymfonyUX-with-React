@@ -21,13 +21,13 @@ interface RefNewPlayerInterface {
   openModal: () => void
 }
 
-interface NewPlayerPropsInterface {
+interface ModalRefreshlistInterface {
   refreshList: () => void
 }
 
 const NewPlayer = React.forwardRef<
   RefNewPlayerInterface,
-  NewPlayerPropsInterface
+  ModalRefreshlistInterface
 >(({ refreshList }, ref) => {
   const [open, setOpen] = React.useState(false)
   const handleClose = () => setOpen(false)
@@ -148,4 +148,4 @@ const NewPlayer = React.forwardRef<
 })
 
 export default NewPlayer
-export { RefNewPlayerInterface, NewDataPlayerType }
+export { RefNewPlayerInterface, NewDataPlayerType, ModalRefreshlistInterface }

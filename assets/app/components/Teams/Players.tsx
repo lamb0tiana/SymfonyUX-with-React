@@ -26,6 +26,7 @@ type PlayerType = {
   name: string
   surname: string
   worth: number
+  slug: string
 }
 const Players = () => {
   const { slug } = useParams()
@@ -36,7 +37,7 @@ const Players = () => {
   const hasTeam: boolean = payloads?.team?.id != null
   const [isOwner, setIsOwner] = useState<boolean>(false)
 
-  const fetcingData = () => {
+  const fetchingData = () => {
     const url = `${process.env.API_URL}/teams/${slug}/players`
     setIsFetchingData(true)
     doQuery(url).then(({ data }) => {
@@ -46,7 +47,7 @@ const Players = () => {
   }
   useEffect(() => {
     dispatch({ token: localStorage.getItem('app_token') })
-    fetcingData()
+    fetchingData()
   }, [])
 
   useEffect(() => {
@@ -105,28 +106,35 @@ const Players = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {data.map(({ id, name, surname, worth }) => (
+                  {data.map(({ id, name, surname, worth, slug }) => (
                     <TableRow key={id}>
                       <TableCell>{name}</TableCell>
                       <TableCell>{surname}</TableCell>
                       <TableCell>
-                        <Button
-                          color={isOwner ? 'success' : 'primary'}
-                          variant="contained"
-                          size={'small'}
-                          disabled={!hasTeam}
-                          onClick={() =>
-                            PlayerWorthRef.current.handleOpen({ id, worth })
-                          }
-                        >
-                          {`${
-                            isOwner
-                              ? worth
-                                ? 'Edit worth'
-                                : 'Sell player'
-                              : 'Buy player'
-                          }`}
-                        </Button>
+                        {!isOwner && !worth ? (
+                          '-'
+                        ) : (
+                          <Button
+                            color={isOwner ? 'success' : 'primary'}
+                            variant="contained"
+                            size={'small'}
+                            disabled={!hasTeam}
+                            onClick={() =>
+                              PlayerWorthRef.current.handleOpen({
+                                slug,
+                                worth,
+                              })
+                            }
+                          >
+                            {`${
+                              isOwner
+                                ? worth
+                                  ? 'Edit worth'
+                                  : 'Sell player'
+                                : 'Buy player'
+                            }`}
+                          </Button>
+                        )}
                         {hasTeam && worth ? (
                           <Typography
                             ml={2}
@@ -155,9 +163,9 @@ const Players = () => {
           <Typography>No player available</Typography>
         )}
       </div>
-      <PlayerWorth ref={PlayerWorthRef} />
+      <PlayerWorth ref={PlayerWorthRef} refreshList={fetchingData} />
       {token ? <NewTeam isOpen={!payloads?.team?.id} /> : ''}
-      <NewPlayer ref={newPlayerRef} refreshList={fetcingData} />
+      <NewPlayer ref={newPlayerRef} refreshList={fetchingData} />
     </Grid>
   )
 }
