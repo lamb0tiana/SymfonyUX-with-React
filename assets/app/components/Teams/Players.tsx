@@ -17,7 +17,10 @@ import PlayerWorth, {
   RefWorthModalRefInterface,
 } from '../Modals/PlayerWorth'
 import NewTeam from '../Modals/NewTeam'
-import NewPlayer, { RefNewPlayerInterface } from '../Modals/NewPlayer'
+import NewPlayer, {
+  NewDataPlayerType,
+  RefNewPlayerInterface,
+} from '../Modals/NewPlayer'
 type PlayerType = {
   id: number
   name: string
@@ -32,14 +35,18 @@ const Players = () => {
   const [isAddPlayer, setIsAddPlayer] = useState<boolean>(false)
   const hasTeam: boolean = payloads?.team?.id != null
   const [isOwner, setIsOwner] = useState<boolean>(false)
-  useEffect(() => {
-    dispatch({ token: localStorage.getItem('app_token') })
+
+  const fetcingData = () => {
     const url = `${process.env.API_URL}/teams/${slug}/players`
     setIsFetchingData(true)
     doQuery(url).then(({ data }) => {
       setData(data)
       setIsFetchingData(false)
     })
+  }
+  useEffect(() => {
+    dispatch({ token: localStorage.getItem('app_token') })
+    fetcingData()
   }, [])
 
   useEffect(() => {
@@ -50,6 +57,7 @@ const Players = () => {
     useRef(null)
 
   const newPlayerRef: React.RefObject<RefNewPlayerInterface> = useRef(null)
+
   return (
     <Grid textAlign={'center'}>
       <Typography
@@ -58,17 +66,23 @@ const Players = () => {
         fontSize={'3rem'}
         mt={'150px'}
       >
-        Players of team
+        {isOwner
+          ? 'Your teams'
+          : `Players of team ${payloads?.team?.name || ''}`}
       </Typography>
-      <Button
-        size={'small'}
-        variant="contained"
-        color="primary"
-        style={{ marginTop: '1rem' }}
-        onClick={() => newPlayerRef.current.openModal()}
-      >
-        Add player
-      </Button>
+      {isOwner && hasTeam ? (
+        <Button
+          size={'small'}
+          variant="contained"
+          color="primary"
+          style={{ marginTop: '1rem' }}
+          onClick={() => newPlayerRef.current.openModal()}
+        >
+          Add player
+        </Button>
+      ) : (
+        ''
+      )}
       <div
         style={{
           display: 'flex',
@@ -143,7 +157,7 @@ const Players = () => {
       </div>
       <PlayerWorth ref={PlayerWorthRef} />
       {token ? <NewTeam isOpen={!payloads?.team?.id} /> : ''}
-      <NewPlayer ref={newPlayerRef} />
+      <NewPlayer ref={newPlayerRef} refreshList={fetcingData} />
     </Grid>
   )
 }

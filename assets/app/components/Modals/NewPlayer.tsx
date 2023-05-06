@@ -1,19 +1,11 @@
 import React, { ChangeEvent, useEffect, useState } from 'react'
-import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Modal from '@mui/material/Modal'
-import {
-  Autocomplete,
-  FormControl,
-  Input,
-  InputAdornment,
-  InputLabel,
-  TextField,
-} from '@mui/material'
+import { FormControl, Input, InputLabel } from '@mui/material'
 import { getCodeList } from 'country-list'
 import { doQuery, QueryMethod } from '../../utils'
 import { Typography } from '@material-ui/core'
-import { useAuth, validateToken } from '../../context/authContext'
+import { useAuth } from '../../context/authContext'
 import { useNavigate } from 'react-router-dom'
 
 interface CountryNames<T extends string> {
@@ -21,21 +13,29 @@ interface CountryNames<T extends string> {
 }
 const countries: CountryNames<string> = getCodeList()
 
-type NewDataTeamType = {
+type NewDataPlayerType = {
   name: string
   surname: string
 }
 interface RefNewPlayerInterface {
   openModal: () => void
 }
-const NewPlayer = React.forwardRef<RefNewPlayerInterface, {}>((props, ref) => {
+
+interface NewPlayerPropsInterface {
+  refreshList: () => void
+}
+
+const NewPlayer = React.forwardRef<
+  RefNewPlayerInterface,
+  NewPlayerPropsInterface
+>(({ refreshList }, ref) => {
   const [open, setOpen] = React.useState(false)
   const handleClose = () => setOpen(false)
   const [errors, setErrors] = useState<string[]>([])
   const { dispatch, payloads } = useAuth()
   const navigate = useNavigate()
 
-  const [formData, setFormData] = useState<NewDataTeamType>({
+  const [formData, setFormData] = useState<NewDataPlayerType>({
     surname: null,
     name: null,
   })
@@ -48,16 +48,18 @@ const NewPlayer = React.forwardRef<RefNewPlayerInterface, {}>((props, ref) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setOpen(false)
-    /*    const { data, status } = await createPlayer()
+    const route = `${process.env.API_URL}/players/create`
+    const { data, status } = await doQuery(route, QueryMethod.POST, formData)
     switch (status) {
       case 400:
         const _errors = data.map(({ message }) => message)
         setErrors(_errors)
         break
       case 201:
+        setOpen(false)
+        refreshList()
         break
-    }*/
+    }
   }
 
   React.useImperativeHandle(ref, () => {
@@ -65,6 +67,14 @@ const NewPlayer = React.forwardRef<RefNewPlayerInterface, {}>((props, ref) => {
       openModal: () => setOpen(true),
     }
   })
+  useEffect(() => {
+    if (open === false) {
+      setFormData({
+        name: null,
+        surname: null,
+      })
+    }
+  }, [open])
   return (
     <div>
       <Modal
@@ -126,7 +136,6 @@ const NewPlayer = React.forwardRef<RefNewPlayerInterface, {}>((props, ref) => {
                 variant="contained"
                 type="submit"
                 style={{ marginTop: '1rem' }}
-                onClick={handleSubmit}
               >
                 Add player
               </Button>
@@ -139,4 +148,4 @@ const NewPlayer = React.forwardRef<RefNewPlayerInterface, {}>((props, ref) => {
 })
 
 export default NewPlayer
-export { RefNewPlayerInterface }
+export { RefNewPlayerInterface, NewDataPlayerType }
