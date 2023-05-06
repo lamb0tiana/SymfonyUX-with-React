@@ -24,7 +24,7 @@ class PlayerTeam
     #[ORM\Column]
     #[Groups(['read'])]
     #[TransfertPlayerValidator]
-    private ?float $cost = null;
+    private ?float $cost = 0;
 
     #[ORM\ManyToOne(inversedBy: 'playerTeams')]
     #[ORM\JoinColumn(nullable: false)]

@@ -2,6 +2,7 @@
 
 namespace App\EventSubscriber;
 
+use App\Entity\Player;
 use App\Entity\PlayerTeam;
 use App\Entity\Team;
 use App\Entity\TeamManager;
@@ -16,6 +17,15 @@ class DoctrineSubscriber implements EventSubscriber
 {
     public function __construct(private EntityManagerInterface $entityManager, private UserPasswordHasherInterface $passwordHasher, private Security $user)
     {
+    }
+
+    private function getUserManager(): ?TeamManager
+    {
+        $repository = $this->entityManager->getRepository(TeamManager::class);
+        $user = $this->user->getUser();
+        /** @var TeamManager $teamManager */
+        $teamManager = $repository->find($user->getId());
+        return $teamManager;
     }
 
     public function prePersist(LifecycleEventArgs $args): void
@@ -33,11 +43,11 @@ class DoctrineSubscriber implements EventSubscriber
         } elseif ($entity instanceof TeamManager) {
             $this->handlePassword($entity);
         } elseif ($entity instanceof Team) {
-            $repository = $this->entityManager->getRepository(TeamManager::class);
-            /** @var TeamManager $user */
-            $user = $this->user->getUser();
-            $teamManager = $repository->find($user->getId());
-            $entity->setTeamManager($teamManager);
+            $entity->setTeamManager($this->getUserManager());
+        } elseif ($entity instanceof Player) {
+            $playerTeam = new PlayerTeam();
+            $playerTeam->setPlayer($entity)->setTeam($this->getUserManager()->getTeam());
+            $this->entityManager->persist($playerTeam);
         }
     }
 

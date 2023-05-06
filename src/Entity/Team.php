@@ -14,6 +14,7 @@ use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Type;
 use Gedmo\Mapping\Annotation as Gedmo;
 use App\Validator\Team\Team as TeamValidator;
+
 #[ORM\Entity(repositoryClass: TeamRepository::class)]
 #[Gedmo]
 #[UniqueEntity(fields: ['name'], message: 'Team with name {{ value }} already exists')]
