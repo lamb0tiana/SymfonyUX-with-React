@@ -29,6 +29,23 @@ const Layout = () => {
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
           <Toolbar>
+            {hasValidToken ? (
+              <Box>
+                <img
+                  loading="lazy"
+                  width="20"
+                  src={`https://flagcdn.com/w20/${paylods.team.countryCode.toLowerCase()}.png`}
+                  srcSet={`https://flagcdn.com/w40/${paylods.team.countryCode.toLowerCase()}.png 2x`}
+                  alt=""
+                />
+                <Typography component={'span'} ml={'10px'}>
+                  {paylods.team.name} | $
+                  {paylods.team.moneyBalance.toLocaleString('en-US')}
+                </Typography>
+              </Box>
+            ) : (
+              ''
+            )}
             <Box
               sx={{
                 marginLeft: 'auto',

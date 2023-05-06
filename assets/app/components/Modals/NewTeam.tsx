@@ -11,7 +11,7 @@ import {
   TextField,
 } from '@mui/material'
 import { getCodeList } from 'country-list'
-import { doQuery, QueryMethod } from '../../utils'
+import { doQuery, getRefreshedToken, QueryMethod } from '../../utils'
 import { Typography } from '@material-ui/core'
 import { useAuth, validateToken } from '../../context/authContext'
 import { useNavigate } from 'react-router-dom'
@@ -27,6 +27,7 @@ type NewDataTeamType = {
   country: string
   balance: number | string
 }
+
 const NewTeam = ({ isOpen }) => {
   const [open, setOpen] = React.useState(isOpen)
   const handleClose = () => setOpen(false)
@@ -54,15 +55,6 @@ const NewTeam = ({ isOpen }) => {
     })
 
     return { data, status }
-  }
-
-  const getRefreshedToken = async () => {
-    const route = `${process.env.API_URL}/me`
-    const { data, status } = await doQuery(route)
-    if (status === 200) {
-      return data
-    }
-    return { token: null }
   }
 
   const handleSubmit = async (e) => {

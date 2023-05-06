@@ -48,10 +48,6 @@ const TeamDataTable = () => {
     setPage(0)
   }
 
-  const selectRow = (e) => {
-    console.log(e)
-  }
-
   useEffect(() => {
     dispatch({ token: localStorage.getItem('app_token') })
   }, [])
@@ -105,8 +101,20 @@ const TeamDataTable = () => {
                     data.teams.map((team) => (
                       <TableRow hover role="checkbox" key={team.id}>
                         <TableCell>{team.name}</TableCell>
-                        <TableCell>{team.isocode}</TableCell>
-                        <TableCell>{team.funds}</TableCell>
+                        <TableCell>
+                          {' '}
+                          <img
+                            loading="lazy"
+                            width="20"
+                            src={`https://flagcdn.com/w20/${team.isocode.toLowerCase()}.png`}
+                            srcSet={`https://flagcdn.com/w40/${team.isocode.toLowerCase()}.png 2x`}
+                            alt=""
+                          />{' '}
+                          {team.isocode}
+                        </TableCell>
+                        <TableCell>
+                          ${team.funds.toLocaleString('en-US')}
+                        </TableCell>
                         <TableCell>
                           <Button
                             variant="contained"

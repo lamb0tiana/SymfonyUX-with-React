@@ -9,8 +9,8 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import TableCell from '@mui/material/TableCell'
 import TableBody from '@mui/material/TableBody'
-import { doQuery, QueryMethod } from '../../utils'
-import { useAuth } from '../../context/authContext'
+import { doQuery, getRefreshedToken, QueryMethod } from '../../utils'
+import { useAuth, validateToken } from '../../context/authContext'
 import PlayerWorth, { RefWorthModalRefInterface } from '../Modals/PlayerWorth'
 import NewTeam from '../Modals/NewTeam'
 import NewPlayer, { RefNewPlayerInterface } from '../Modals/NewPlayer'
@@ -71,6 +71,10 @@ const Players = () => {
       setErrors(_errors)
     } else if (status === 201) {
       fetchingData()
+      const { token } = await getRefreshedToken()
+      if (token) {
+        validateToken(token) && dispatch({ token })
+      }
     }
   }
   const handleClick = ({ worth, slug }) => {
@@ -86,9 +90,7 @@ const Players = () => {
           fontWeight: 'bold!important',
         }}
       >
-        {isOwner
-          ? 'Your teams'
-          : `Players of team ${payloads?.team?.name || ''}`}
+        {isOwner ? 'Your teams' : `Players of team ${slug || ''}`}
       </Typography>
       <Errors errors={errors} />
       {isOwner && hasTeam ? (

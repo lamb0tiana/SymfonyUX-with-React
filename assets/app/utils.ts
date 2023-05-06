@@ -15,9 +15,18 @@ const doQuery = async (
   return { data, status }
 }
 
+const getRefreshedToken = async () => {
+  const route = `${process.env.API_URL}/me`
+  const { data, status } = await doQuery(route)
+  if (status === 200) {
+    return data
+  }
+  return { token: null }
+}
+
 const getRandomInt = (min, max) => {
   min = Math.ceil(min)
   max = Math.floor(max)
   return Math.floor(Math.random() * (max - min) + min)
 }
-export { doQuery, QueryMethod, getRandomInt }
+export { doQuery, QueryMethod, getRandomInt, getRefreshedToken }
