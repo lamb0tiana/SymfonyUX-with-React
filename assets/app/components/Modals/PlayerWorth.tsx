@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Button from '@mui/material/Button'
 import Modal from '@mui/material/Modal'
 import { FormControl, Input, InputAdornment, InputLabel } from '@mui/material'
 import { doQuery, QueryMethod } from '../../utils'
 import { ModalRefreshlistInterface } from './NewPlayer'
+import Errors from '../Errors'
 
 interface DefinitionWorthInterface {
   slug: string
@@ -21,6 +22,8 @@ const PlayerWorth = React.forwardRef<
   const [open, setOpen] = React.useState(false)
   const handleClose = () => setOpen(false)
   const [data, setData] = useState<DefinitionWorthInterface>(null)
+  const [errors, setErrors] = useState<string[]>([])
+
   React.useImperativeHandle(ref, () => {
     return {
       handleOpen: (data) => {
@@ -45,8 +48,14 @@ const PlayerWorth = React.forwardRef<
     if (status === 204) {
       setOpen(false)
       refreshList()
+    } else if (status === 403) {
+      setErrors(['You are not allowed to do this action.'])
     }
   }
+
+  useEffect(() => {
+    setErrors([])
+  }, [data])
   return (
     <div>
       <Modal
@@ -70,6 +79,7 @@ const PlayerWorth = React.forwardRef<
           <form onSubmit={handleSubmit}>
             <FormControl fullWidth sx={{ m: 1 }} variant="standard">
               <InputLabel htmlFor="standard-adornment-amount">Worth</InputLabel>
+              <Errors errors={errors} />
               <Input
                 id="standard-adornment-amount"
                 startAdornment={

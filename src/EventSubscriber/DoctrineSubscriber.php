@@ -24,8 +24,7 @@ class DoctrineSubscriber implements EventSubscriber
         $repository = $this->entityManager->getRepository(TeamManager::class);
         $user = $this->user->getUser();
         /** @var TeamManager $teamManager */
-        $teamManager = $repository->find($user->getId());
-        return $teamManager;
+        return $repository->find($user->getId());
     }
 
     public function prePersist(LifecycleEventArgs $args): void

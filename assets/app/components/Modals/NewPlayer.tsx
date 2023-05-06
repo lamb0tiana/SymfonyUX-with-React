@@ -7,6 +7,7 @@ import { doQuery, QueryMethod } from '../../utils'
 import { Typography } from '@material-ui/core'
 import { useAuth } from '../../context/authContext'
 import { useNavigate } from 'react-router-dom'
+import Errors from '../Errors'
 
 interface CountryNames<T extends string> {
   [key: string]: T
@@ -75,6 +76,11 @@ const NewPlayer = React.forwardRef<
       })
     }
   }, [open])
+
+  useEffect(() => {
+    setErrors([])
+  }, [formData])
+
   return (
     <div>
       <Modal
@@ -96,16 +102,7 @@ const NewPlayer = React.forwardRef<
         >
           <h2>Add player in your team</h2>
           <form onSubmit={handleSubmit}>
-            {errors.map((error, index) => (
-              <Typography
-                key={index}
-                variant="body1"
-                color="error"
-                align={'center'}
-              >
-                {error}
-              </Typography>
-            ))}
+            <Errors errors={errors} />
             <FormControl fullWidth sx={{ m: 1 }} variant="standard">
               <InputLabel htmlFor="name">Name</InputLabel>
               <Input

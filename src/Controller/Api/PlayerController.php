@@ -4,6 +4,7 @@ namespace App\Controller\Api;
 
 use App\Entity\Player;
 use App\Entity\PlayerTeam;
+use App\Security\Voter\PlayerWorthVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -24,6 +25,7 @@ class PlayerController extends BaseApiController
     #[Entity("player", expr: "repository.findOneBySlug(slug)")]
     public function setWorth(Request $request, EntityManagerInterface $entityManager, ?Player $player)
     {
+        $this->denyAccessUnlessGranted(PlayerWorthVoter::CAN_SET_WORTH, $player);
         $repository = $entityManager->getRepository(PlayerTeam::class);
         $post = json_decode($request->getContent(), true);
         $currentPlayerTeam = $repository->getTeamOfPlayer($player);
