@@ -68,7 +68,7 @@ class TeamRepository extends ServiceEntityRepository
         $playerTeamTable = $this->_em->getClassMetadata(PlayerTeam::class)->getTableName();
         $playerTable = $this->_em->getClassMetadata(Player::class)->getTableName();
 
-        $sql = sprintf('SELECT p.id, p.name, p.surname, pt.cost worth FROM %s p inner join %s pt on p.id = pt.player_id and pt.team_id = %d', $playerTable, $playerTeamTable, $team->getId());
+        $sql = sprintf('SELECT p.id, p.name, p.surname, pt.cost worth , p.slug FROM %s p inner join %s pt on p.id = pt.player_id and pt.team_id = %d', $playerTable, $playerTeamTable, $team->getId());
         return $this->query($sql);
     }
 }

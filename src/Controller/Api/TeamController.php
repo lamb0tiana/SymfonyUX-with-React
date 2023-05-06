@@ -57,7 +57,8 @@ class TeamController extends BaseApiController
     /**
      * @throws \Symfony\Component\Serializer\Exception\ExceptionInterface
      */
-    #[Route('/setPlayer/{player}', name: 'add_player', methods: Request::METHOD_POST)]
+    #[Route('/setPlayer/{slug}', name: 'add_player', methods: Request::METHOD_POST)]
+    #[Entity("player", expr: "repository.findOneBySlug(slug)")]
     public function addPlayer(#[CurrentUser] ?TeamManager $teamManager, Request $request, ?Player $player = null): JsonResponse
     {
         $validationQuery = $this->validateTransfertRequest($request);
