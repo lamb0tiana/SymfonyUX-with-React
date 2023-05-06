@@ -84,7 +84,7 @@ const NewTeam = ({ isOpen }) => {
   }
 
   useEffect(() => {
-    if (payloads.team?.id) {
+    if (open && payloads.team?.id) {
       setOpen(false)
       navigate(`/team/${payloads.team.slug}`)
     }

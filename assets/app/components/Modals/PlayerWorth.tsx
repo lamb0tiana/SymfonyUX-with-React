@@ -17,11 +17,11 @@ interface DefinitionWorthInterface {
   worth: number | string
 }
 
-interface WorthModalRefInterface {
+interface RefWorthModalRefInterface {
   handleOpen: (params: DefinitionWorthInterface) => void
 }
 
-const PlayerWorth = React.forwardRef<WorthModalRefInterface, {}>(
+const PlayerWorth = React.forwardRef<RefWorthModalRefInterface, {}>(
   (props, ref) => {
     const [open, setOpen] = React.useState(false)
     const handleClose = () => setOpen(false)
@@ -96,4 +96,4 @@ const PlayerWorth = React.forwardRef<WorthModalRefInterface, {}>(
 )
 
 export default PlayerWorth
-export { DefinitionWorthInterface }
+export { DefinitionWorthInterface, RefWorthModalRefInterface }

@@ -12,8 +12,12 @@ import TableBody from '@mui/material/TableBody'
 import TablePagination from '@mui/material/TablePagination'
 import { doQuery, getRandomInt } from '../../utils'
 import { AuthContextInterface, useAuth } from '../../context/authContext'
-import PlayerWorth, { DefinitionWorthInterface } from '../Modals/PlayerWorth'
+import PlayerWorth, {
+  DefinitionWorthInterface,
+  RefWorthModalRefInterface,
+} from '../Modals/PlayerWorth'
 import NewTeam from '../Modals/NewTeam'
+import NewPlayer, { RefNewPlayerInterface } from '../Modals/NewPlayer'
 type PlayerType = {
   id: number
   name: string
@@ -25,6 +29,7 @@ const Players = () => {
   const [isFetchingData, setIsFetchingData] = useState(false)
   const [data, setData] = useState<PlayerType[]>([])
   const { dispatch, payloads, token } = useAuth()
+  const [isAddPlayer, setIsAddPlayer] = useState<boolean>(false)
   const hasTeam: boolean = payloads?.team?.id != null
   const [isOwner, setIsOwner] = useState<boolean>(false)
   useEffect(() => {
@@ -41,9 +46,10 @@ const Players = () => {
     setIsOwner(slug === payloads?.team?.slug)
   }, [payloads])
 
-  const myRef: React.RefObject<{
-    handleOpen: (params: DefinitionWorthInterface) => void
-  }> = useRef(null)
+  const PlayerWorthRef: React.RefObject<RefWorthModalRefInterface> =
+    useRef(null)
+
+  const newPlayerRef: React.RefObject<RefNewPlayerInterface> = useRef(null)
   return (
     <Grid textAlign={'center'}>
       <Typography
@@ -59,6 +65,7 @@ const Players = () => {
         variant="contained"
         color="primary"
         style={{ marginTop: '1rem' }}
+        onClick={() => newPlayerRef.current.openModal()}
       >
         Add player
       </Button>
@@ -95,7 +102,7 @@ const Players = () => {
                           size={'small'}
                           disabled={!hasTeam}
                           onClick={() =>
-                            myRef.current.handleOpen({ id, worth })
+                            PlayerWorthRef.current.handleOpen({ id, worth })
                           }
                         >
                           {`${
@@ -134,8 +141,9 @@ const Players = () => {
           <Typography>No player available</Typography>
         )}
       </div>
-      <PlayerWorth ref={myRef} />
+      <PlayerWorth ref={PlayerWorthRef} />
       {token ? <NewTeam isOpen={!payloads?.team?.id} /> : ''}
+      <NewPlayer ref={newPlayerRef} />
     </Grid>
   )
 }
