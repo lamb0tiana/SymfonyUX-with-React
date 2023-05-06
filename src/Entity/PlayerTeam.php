@@ -10,7 +10,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PlayerTeamRepository::class)]
-#[UniqueEntity(fields: ['player','team'], message: 'This player is already in this team')]
+#[UniqueEntity(fields: ['player','team', 'isCurrentTeam'], message: 'This player is already in this team')]
 class PlayerTeam
 {
     use TimestampableEntity;
@@ -35,6 +35,9 @@ class PlayerTeam
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['read'])]
     private ?Team $team = null;
+
+    #[ORM\Column]
+    private ?bool $isCurrentTeam = true;
 
 
     public function getId(): ?int
@@ -75,6 +78,18 @@ class PlayerTeam
     public function setTeam(?Team $team): self
     {
         $this->team = $team;
+
+        return $this;
+    }
+
+    public function isIsCurrentTeam(): ?bool
+    {
+        return $this->isCurrentTeam;
+    }
+
+    public function setIsCurrentTeam(bool $isCurrentTeam): self
+    {
+        $this->isCurrentTeam = $isCurrentTeam;
 
         return $this;
     }

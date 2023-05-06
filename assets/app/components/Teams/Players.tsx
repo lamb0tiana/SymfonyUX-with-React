@@ -1,6 +1,6 @@
-import { Routes, Route, useParams } from 'react-router-dom'
-import React, { useEffect, useState, useRef, createRef, RefObject } from 'react'
-import { Button, Grid, InputLabel, Typography } from '@mui/material'
+import { useParams } from 'react-router-dom'
+import React, { useEffect, useRef, useState } from 'react'
+import { Button, Grid, Typography } from '@mui/material'
 import Loader from '../Loader'
 import Paper from '@mui/material/Paper'
 import TableContainer from '@mui/material/TableContainer'
@@ -9,18 +9,13 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import TableCell from '@mui/material/TableCell'
 import TableBody from '@mui/material/TableBody'
-import TablePagination from '@mui/material/TablePagination'
-import { doQuery, getRandomInt } from '../../utils'
-import { AuthContextInterface, useAuth } from '../../context/authContext'
-import PlayerWorth, {
-  DefinitionWorthInterface,
-  RefWorthModalRefInterface,
-} from '../Modals/PlayerWorth'
+import { doQuery, QueryMethod } from '../../utils'
+import { useAuth } from '../../context/authContext'
+import PlayerWorth, { RefWorthModalRefInterface } from '../Modals/PlayerWorth'
 import NewTeam from '../Modals/NewTeam'
-import NewPlayer, {
-  NewDataPlayerType,
-  RefNewPlayerInterface,
-} from '../Modals/NewPlayer'
+import NewPlayer, { RefNewPlayerInterface } from '../Modals/NewPlayer'
+import Errors from '../Errors'
+
 type PlayerType = {
   id: number
   name: string
@@ -36,7 +31,7 @@ const Players = () => {
   const [isAddPlayer, setIsAddPlayer] = useState<boolean>(false)
   const hasTeam: boolean = payloads?.team?.id != null
   const [isOwner, setIsOwner] = useState<boolean>(false)
-
+  const [errors, setErrors] = useState<string[]>([])
   const fetchingData = () => {
     const url = `${process.env.API_URL}/teams/${slug}/players`
     setIsFetchingData(true)
@@ -59,18 +54,43 @@ const Players = () => {
 
   const newPlayerRef: React.RefObject<RefNewPlayerInterface> = useRef(null)
 
+  const setWorth = ({ worth, slug }) =>
+    PlayerWorthRef.current.handleOpen({
+      slug,
+      worth,
+    })
+
+  const buyPlayer = async ({ worth, slug }) => {
+    const route = `${process.env.API_URL}/teams/setPlayer/${slug}`
+    setErrors([])
+    const { status, data: response } = await doQuery(route, QueryMethod.POST, {
+      transfert_amount: worth,
+    })
+    if (status === 400) {
+      const _errors = response.map(({ message }) => message)
+      setErrors(_errors)
+    } else if (status === 201) {
+      fetchingData()
+    }
+  }
+  const handleClick = ({ worth, slug }) => {
+    isOwner ? setWorth({ worth, slug }) : buyPlayer({ worth, slug })
+  }
   return (
     <Grid textAlign={'center'}>
       <Typography
         component={'h3'}
-        fontWeight={'bold'}
-        fontSize={'3rem'}
-        mt={'150px'}
+        sx={{
+          marginTop: '150px!important',
+          fontSize: '3rem!important',
+          fontWeight: 'bold!important',
+        }}
       >
         {isOwner
           ? 'Your teams'
           : `Players of team ${payloads?.team?.name || ''}`}
       </Typography>
+      <Errors errors={errors} />
       {isOwner && hasTeam ? (
         <Button
           size={'small'}
@@ -119,12 +139,7 @@ const Players = () => {
                             variant="contained"
                             size={'small'}
                             disabled={!hasTeam}
-                            onClick={() =>
-                              PlayerWorthRef.current.handleOpen({
-                                slug,
-                                worth,
-                              })
-                            }
+                            onClick={(e) => handleClick({ worth, slug })}
                           >
                             {`${
                               isOwner

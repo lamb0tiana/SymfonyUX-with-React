@@ -48,6 +48,8 @@ const PlayerWorth = React.forwardRef<
     if (status === 204) {
       setOpen(false)
       refreshList()
+    } else if (status === 400) {
+      setErrors(response)
     } else if (status === 403) {
       setErrors(['You are not allowed to do this action.'])
     }

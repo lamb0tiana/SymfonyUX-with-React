@@ -49,7 +49,7 @@ const NewTeam = ({ isOpen }) => {
     const { country: countryCode, balance: money_balance, name } = formData
     const { data, status } = await doQuery(route, QueryMethod.POST, {
       name,
-      money_balance,
+      money_balance: +money_balance.toString().replace(/\s/g, ''),
       countryCode: countryCode.toUpperCase(),
     })
 

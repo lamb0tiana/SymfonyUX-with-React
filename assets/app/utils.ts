@@ -8,9 +8,9 @@ const doQuery = async (
   method = QueryMethod.GET,
   payloads: unknown = null
 ): Promise<{ data: any; status: number }> => {
-  const { data, status } = await axios[method](route, payloads).catch(
-    (e) => e.response
-  )
+  const { data, status } = await axios[method](route, payloads).catch((e) => {
+    return e.response
+  })
 
   return { data, status }
 }

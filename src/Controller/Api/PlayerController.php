@@ -36,6 +36,10 @@ class PlayerController extends BaseApiController
         })->last();
 
         ['worth' => $worth] = $post;
+        $worth = str_replace([" "], [""], $worth) ;
+        if (preg_match("/[^\d]/", $worth)) {
+            return $this->json(['Worth is not correct'], Response::HTTP_BAD_REQUEST);
+        }
         $playerTeam->setCost($worth);
         $entityManager->flush();
         return $this->json([], Response::HTTP_NO_CONTENT);

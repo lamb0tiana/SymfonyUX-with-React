@@ -32,9 +32,16 @@ class DoctrineSubscriber implements EventSubscriber
         $entity = $args->getObject();
         if ($entity instanceof PlayerTeam) {
             $team = $entity->getTeam();
+            $player = $entity->getPlayer();
             $repository = $this->entityManager->getRepository(PlayerTeam::class);
             /** @var Team|null $currentOwner */
-            $currentOwner = $repository->getTeamOfPlayer($entity->getPlayer());
+            $currentOwner = $repository->getTeamOfPlayer($player);
+
+            /** @var PlayerTeam $currentPlayerTeam */
+            if ($currentPlayerTeam = $repository->getCurrentPlayerTeam($player)) {
+                $currentPlayerTeam->setIsCurrentTeam(false);
+            }
+
             if ($currentOwner) {
                 $team->setMoneyBalance($team->getMoneyBalance()- $entity->getCost());
                 $currentOwner->setMoneyBalance($currentOwner->getMoneyBalance()+ $entity->getCost());
