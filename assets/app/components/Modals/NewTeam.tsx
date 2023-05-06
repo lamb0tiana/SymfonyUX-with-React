@@ -26,7 +26,7 @@ type NewDataTeamType = {
   country: string
   balance: number | string
 }
-const CreateTeamModal = ({ isOpen }) => {
+const NewTeam = ({ isOpen }) => {
   const [open, setOpen] = React.useState(isOpen)
   const handleClose = () => setOpen(false)
   const [errors, setErrors] = useState<string[]>([])
@@ -212,4 +212,4 @@ const CreateTeamModal = ({ isOpen }) => {
   )
 }
 
-export default CreateTeamModal
+export default NewTeam

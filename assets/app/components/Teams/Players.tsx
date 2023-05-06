@@ -12,8 +12,8 @@ import TableBody from '@mui/material/TableBody'
 import TablePagination from '@mui/material/TablePagination'
 import { doQuery, getRandomInt } from '../../utils'
 import { AuthContextInterface, useAuth } from '../../context/authContext'
-import WorthModal, { DefinitionWorthInterface } from './WorthModal'
-import CreateTeamModal from './CreateTeamModal'
+import PlayerWorth, { DefinitionWorthInterface } from '../Modals/PlayerWorth'
+import NewTeam from '../Modals/NewTeam'
 type PlayerType = {
   id: number
   name: string
@@ -45,23 +45,29 @@ const Players = () => {
     handleOpen: (params: DefinitionWorthInterface) => void
   }> = useRef(null)
   return (
-    <Grid>
+    <Grid textAlign={'center'}>
       <Typography
         component={'h3'}
         fontWeight={'bold'}
-        textAlign={'center'}
         fontSize={'3rem'}
-        margin={'auto'}
         mt={'150px'}
       >
         Players of team
       </Typography>
-
+      <Button
+        size={'small'}
+        variant="contained"
+        color="primary"
+        style={{ marginTop: '1rem' }}
+      >
+        Add player
+      </Button>
       <div
         style={{
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
+          marginTop: '15px',
         }}
       >
         {isFetchingData ? (
@@ -128,8 +134,8 @@ const Players = () => {
           <Typography>No player available</Typography>
         )}
       </div>
-      <WorthModal ref={myRef} />
-      {token ? <CreateTeamModal isOpen={!payloads?.team?.id} /> : ''}
+      <PlayerWorth ref={myRef} />
+      {token ? <NewTeam isOpen={!payloads?.team?.id} /> : ''}
     </Grid>
   )
 }

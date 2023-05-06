@@ -11,7 +11,6 @@ import {
 import { LoginOutlined } from '@mui/icons-material'
 import jwt_decode from 'jwt-decode'
 import './layout.scss'
-import CreateTeamModal from '../components/Teams/CreateTeamModal'
 const Layout = () => {
   const navigate = useNavigate()
   const { dispatch, token, payloads } = useAuth()

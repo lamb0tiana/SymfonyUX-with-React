@@ -13,7 +13,7 @@ import { Box, Button, Grid, LinearProgress, Typography } from '@mui/material'
 import Loader from '../Loader'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/authContext'
-import CreateTeamModal from './CreateTeamModal'
+import NewTeam from '../Modals/NewTeam'
 
 interface DataRowInterface {
   id: number
@@ -146,7 +146,7 @@ const TeamDataTable = () => {
           </Paper>
         )}
       </div>
-      {token ? <CreateTeamModal isOpen={!payloads?.team?.id} /> : ''}
+      {token ? <NewTeam isOpen={!payloads?.team?.id} /> : ''}
     </Grid>
   )
 }
