@@ -29,7 +29,7 @@ const Layout = () => {
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
           <Toolbar>
-            {hasValidToken ? (
+            {hasValidToken && paylods.team ? (
               <Box>
                 <img
                   loading="lazy"
@@ -51,16 +51,12 @@ const Layout = () => {
                 marginLeft: 'auto',
               }}
             >
-              {hasValidToken ? (
-                <>
-                  <Button color={'inherit'} onClick={() => navigate('/')}>
-                    <Typography component={'span'}>Teams</Typography>
-                  </Button>
-                  |
-                </>
-              ) : (
-                ''
-              )}
+              <>
+                <Button color={'inherit'} onClick={() => navigate('/')}>
+                  <Typography component={'span'}>Teams</Typography>
+                </Button>
+                |
+              </>
               <Button color="inherit">
                 {token ? (
                   <Typography onClick={logout} component={'span'}>
