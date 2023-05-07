@@ -11,6 +11,6 @@ What I did:
 
 1. Custom REST API (backend) wit Serialization/deserialization concept for handling data.
 2. Data validation and one voter for setting player worth.
-3. Some API routes are protected with in api firewall.
+3. Some API routes are protected with an api firewall.
 4. I had to implemented authentication with JWT authentication for buy and sell players use case.
 5. For the frontend, ReactJS is used, embedded in the project thanks to Symfony UX.
