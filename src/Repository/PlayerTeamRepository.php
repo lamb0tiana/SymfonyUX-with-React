@@ -43,7 +43,7 @@ class PlayerTeamRepository extends ServiceEntityRepository
 
     public function getCurrentPlayerTeam(Player $player): ?PlayerTeam
     {
-        return $this->findOneBy(["player" => $player], ["id" => "desc"]);
+        return $this->findOneBy(["player" => $player, "isCurrentTeam" => true], ["id" => "desc"]);
     }
 
     public function getTeamOfPlayer(Player $player): ?Team
