@@ -33,7 +33,8 @@ RUN pecl install apcu xdebug && docker-php-ext-enable apcu xdebug
 
 RUN a2enmod rewrite
 WORKDIR /var/www/html
+CMD ["/usr/sbin/apache2ctl", "-D","FOREGROUND"]
 
-COPY  . .
-
-RUN chmod 755 entrypoint.sh
+#COPY  . .
+#
+#RUN chmod 755 entrypoint.sh

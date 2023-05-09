@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GraphQl\Mutation;
 use App\Repository\PlayerTeamRepository;
 use App\Validator\Player\TransfertPlayer as TransfertPlayerValidator;
 use Doctrine\ORM\Mapping as ORM;
@@ -11,6 +13,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PlayerTeamRepository::class)]
 #[UniqueEntity(fields: ['player','team', 'isCurrentTeam'], message: 'This player is already in this team')]
+#[ApiResource(
+
+)]
 class PlayerTeam
 {
     use TimestampableEntity;

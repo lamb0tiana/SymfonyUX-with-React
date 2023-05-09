@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use App\GraphQl\Input\CreatePlayerInput;
 use App\Repository\PlayerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -11,9 +13,14 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\Length;
 use Gedmo\Mapping\Annotation as Gedmo;
-
+use ApiPlatform\Metadata\GraphQl\Mutation;
+use ApiPlatform\Metadata\GraphQl\Query;
 #[ORM\Entity(repositoryClass: PlayerRepository::class)]
 #[Gedmo]
+#[ApiResource(graphQlOperations: [
+    new Query(),
+    new Mutation(name: 'create')
+])]
 #[UniqueEntity(fields: ['name', 'surname'], message: 'This already exists')]
 class Player implements TraceableErrors
 {
@@ -35,6 +42,7 @@ class Player implements TraceableErrors
     private ?string $surname = null;
 
     #[ORM\OneToMany(mappedBy: 'player', targetEntity: PlayerTeam::class, orphanRemoval: true)]
+//    #[ApiResource]
     private Collection $playerTeams;
 
     #[ORM\Column(length: 128, unique: true)]

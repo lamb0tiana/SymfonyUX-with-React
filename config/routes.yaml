@@ -11,3 +11,10 @@ api:
     type: attribute
 api_authentication:
     path: /api/authentication
+
+api_graphql_entrypoint:
+    path: /api/graphql
+    controller: api_platform.graphql.action.entrypoint
+graphiql:
+    path: /api/graphiql
+    controller: api_platform.graphql.action.graphiql

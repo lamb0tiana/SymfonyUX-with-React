@@ -44,6 +44,7 @@ security:
     access_control:
         - { path: ^/api/authentication, roles: PUBLIC_ACCESS }
         - { path: ^/api/manager/create, roles: PUBLIC_ACCESS }
+        - { path: ^/api/(graphi?ql)?, roles: PUBLIC_ACCESS }
         - { path: ^/api/teams/((\?.+)|(.+/players))?$,       roles: PUBLIC_ACCESS }
         - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
 
