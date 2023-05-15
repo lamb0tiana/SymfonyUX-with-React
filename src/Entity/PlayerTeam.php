@@ -4,8 +4,10 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GraphQl\Mutation;
+use ApiPlatform\Metadata\GraphQl\QueryCollection;
 use App\Repository\PlayerTeamRepository;
 use App\Validator\Player\TransfertPlayer as TransfertPlayerValidator;
+use ApiPlatform\Metadata\GraphQl\Query;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -13,9 +15,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PlayerTeamRepository::class)]
 #[UniqueEntity(fields: ['player','team', 'isCurrentTeam'], message: 'This player is already in this team')]
-#[ApiResource(
-
-)]
+#[ApiResource(graphQlOperations: [
+    new Query(),
+    new QueryCollection(),
+])]
 class PlayerTeam
 {
     use TimestampableEntity;

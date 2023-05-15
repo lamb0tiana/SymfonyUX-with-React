@@ -20,7 +20,7 @@ use App\Validator\Team\Team as TeamValidator;
 #[Gedmo]
 #[UniqueEntity(fields: ['name'], message: 'Team with name {{ value }} already exists')]
 #[TeamValidator]
-#[ApiResource]
+
 class Team implements TraceableErrors
 {
     use TimestampableEntity;

@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use App\GraphQl\Input\CreatePlayerInput;
+use ApiPlatform\Metadata\GraphQl\QueryCollection;
 use App\Repository\PlayerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -15,12 +15,15 @@ use Symfony\Component\Validator\Constraints\Length;
 use Gedmo\Mapping\Annotation as Gedmo;
 use ApiPlatform\Metadata\GraphQl\Mutation;
 use ApiPlatform\Metadata\GraphQl\Query;
+
 #[ORM\Entity(repositoryClass: PlayerRepository::class)]
 #[Gedmo]
 #[ApiResource(graphQlOperations: [
     new Query(),
-    new Mutation(name: 'create')
-])]
+    new QueryCollection(),
+    new Mutation(name: 'create', denormalizationContext: ['groups' => ['post'] ], normalizationContext: ['groups' => ['read']], security: "is_granted('ROLE_USER')")
+])
+]
 #[UniqueEntity(fields: ['name', 'surname'], message: 'This already exists')]
 class Player implements TraceableErrors
 {
@@ -34,15 +37,15 @@ class Player implements TraceableErrors
 
     #[ORM\Column(length: 100)]
     #[Length(min: 4, minMessage: 'Too short, min 4')]
-    #[Groups(['read'])]
+    #[Groups(['read', 'post'])]
     private string $name;
 
     #[ORM\Column(length: 100)]
-    #[Groups(['read'])]
+    #[Groups(['read', 'post'])]
     private ?string $surname = null;
 
     #[ORM\OneToMany(mappedBy: 'player', targetEntity: PlayerTeam::class, orphanRemoval: true)]
-//    #[ApiResource]
+    #[Groups(['read'])]
     private Collection $playerTeams;
 
     #[ORM\Column(length: 128, unique: true)]

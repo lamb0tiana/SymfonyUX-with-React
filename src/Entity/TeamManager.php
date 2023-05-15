@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\TeamManagerRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Lexik\Bundle\JWTAuthenticationBundle\Security\User\JWTUserInterface;
@@ -15,6 +16,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[ORM\Entity(repositoryClass: TeamManagerRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'Email already taken')]
+//#[ApiResource]
 class TeamManager implements UserInterface, PasswordAuthenticatedUserInterface, JWTUserInterface, TraceableErrors
 {
     #[ORM\Id]
