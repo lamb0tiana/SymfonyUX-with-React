@@ -18,16 +18,13 @@ const    ARGS= [
 ];
 #[ApiResource(
     graphQlOperations: [
-    new CustomMutation(name: "_", args:   ARGS, resolver: AuthResolver::class, normalizationContext: ['groups' => ['token', 'error']])
+    new CustomMutation(name: "_", args:   ARGS, resolver: AuthResolver::class)
 ])]
 class AppAuthentication
 {
     #[ApiProperty(identifier: true, iris:"https://schema.org/identifier" , readable: false)]
     public int $id =0;
 
-    #[Groups(['token'])]
-    public ?string $token;
-    #[Groups(['error'])]
-    public AuthUnionType $error;
+    public AuthUnionType $authPayloads;
 
 }

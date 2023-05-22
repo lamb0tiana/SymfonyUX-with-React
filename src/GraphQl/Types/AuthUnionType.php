@@ -19,10 +19,7 @@ class AuthUnionType extends UnionType implements TypeInterface
             'types' => [
                 Type::getNamedType(new AuthenticatedType()),
                 Type::getNamedType(new FailureAuthType())
-            ],
-            'resolve' => function($a,$b) {
-                               return ['token' => 'cool'];
-                        }
+            ]
         ];
         parent::__construct($config);
     }

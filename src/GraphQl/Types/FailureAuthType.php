@@ -16,7 +16,8 @@ class FailureAuthType extends ObjectType implements TypeInterface
             // it will be inferred from class name by omitting namespace and dropping "Type" suffix
             'fields' => [
                 'error' => Type::nonNull(Type::string())
-            ]
+            ],
+
         ];
         parent::__construct($config);
     }
