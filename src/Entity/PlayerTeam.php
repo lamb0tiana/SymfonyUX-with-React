@@ -15,10 +15,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PlayerTeamRepository::class)]
 #[UniqueEntity(fields: ['player','team', 'isCurrentTeam'], message: 'This player is already in this team')]
-#[ApiResource(graphQlOperations: [
+/*#[ApiResource(graphQlOperations: [
     new Query(),
     new QueryCollection(),
-])]
+])]*/
 class PlayerTeam
 {
     use TimestampableEntity;

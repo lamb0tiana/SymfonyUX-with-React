@@ -6,6 +6,8 @@ namespace App\ApiResource;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GraphQl\Mutation;
+use App\GraphQl\Types\AuthenticatedType;
+use App\GraphQl\Types\AuthUnionType;
 use App\Resolver\MyResolver;
 use App\Resolver\Output;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -16,7 +18,7 @@ const    ARGS= [
 ];
 #[ApiResource(
     graphQlOperations: [
-    new Mutation(name: "_", args:   ARGS,  resolver: AuthResolver::class, normalizationContext: ['groups' => ['token', 'error']])
+    new CustomMutation(name: "_", args:   ARGS, resolver: AuthResolver::class, normalizationContext: ['groups' => ['token', 'error']])
 ])]
 class AppAuthentication
 {
@@ -26,6 +28,6 @@ class AppAuthentication
     #[Groups(['token'])]
     public ?string $token;
     #[Groups(['error'])]
-    public ?string $error;
+    public AuthUnionType $error;
 
 }
