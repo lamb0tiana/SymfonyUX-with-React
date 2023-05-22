@@ -30,3 +30,8 @@ services:
 #            - { name: api_platform.graphql.type }
     App\GraphQl\Converters\Converter:
         decorates: api_platform.graphql.type_converter
+
+
+    App\Resolver\Authentication:
+        tags:
+            - { name: api_platform.graphql.query_resolver }

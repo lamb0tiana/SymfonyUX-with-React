@@ -15,7 +15,8 @@ class AuthenticatedType extends ObjectType implements TypeInterface
             // Note: 'name' is not needed in this form:
             // it will be inferred from class name by omitting namespace and dropping "Type" suffix
             'fields' => [
-               'token' => Type::nonNull(Type::string())
+               'token' => Type::nonNull(Type::string()),
+//                'resolve' => fn() : string => 'from AuthenticatedType'
             ]
         ];
         parent::__construct($config);

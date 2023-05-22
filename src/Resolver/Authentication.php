@@ -18,10 +18,10 @@ class Authentication implements MutationResolverInterface
     }
 
     /** @var AppAuthentication $item */
-    public function __invoke(?object $item, array $context): object
+    public function __invoke(?object $item, array $context): ?object
     {
 
-    $item->token = 'mytoken';
+//    $item->token = 'mytoken';
 
 
         return $item;
