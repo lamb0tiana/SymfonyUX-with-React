@@ -5,6 +5,7 @@ namespace App\ApiResource;
 
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GraphQl\Mutation;
 use App\ApiResource\Security\FailureAuth;
 use App\ApiResource\Security\SuccessAuth;
 use App\Resolver\MyResolver;
@@ -16,7 +17,7 @@ const    ARGS= [
 ];
 #[ApiResource(
     graphQlOperations: [
-    new CustomMutation(name: "_", args:   ARGS, resolver: AuthResolver::class)
+    new Mutation(name: "_", args:   ARGS, resolver: AuthResolver::class)
 ])]
 class AppAuthentication
 {
