@@ -11,9 +11,6 @@ class FailureAuthType extends ObjectType implements TypeInterface
     public function __construct()
     {
         $config = [
-            'name' => 'FailureAuthType',
-            // Note: 'name' is not needed in this form:
-            // it will be inferred from class name by omitting namespace and dropping "Type" suffix
             'fields' => [
                 'error' => Type::nonNull(Type::string())
             ],
@@ -24,7 +21,7 @@ class FailureAuthType extends ObjectType implements TypeInterface
 
     public function getName(): string
     {
-        return 'FailureAuthType';
+        return $this->name;
     }
 
 }

@@ -10,7 +10,7 @@ use Symfony\Component\PropertyInfo\Type;
 
 final class Converter implements TypeConverterInterface
 {
-    public function __construct(private TypeConverterInterface $defaultTypeConverter)
+    public function __construct(private TypeConverterInterface $defaultTypeConverter, private AuthUnionType $authUnionType)
     {
     }
 
@@ -25,7 +25,7 @@ final class Converter implements TypeConverterInterface
     public function convertType(Type $type, bool $input, Operation $rootOperation, string $resourceClass, string $rootResource, ?string $property, int $depth): GraphQLType|string|null
     {
         if ($property === "authPayloads") {
-            return new AuthUnionType();
+            return $this->authUnionType;
         }
         return $this->defaultTypeConverter->convertType($type, $input, $rootOperation, $resourceClass, $rootResource, $property, $depth);
     }

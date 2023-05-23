@@ -4,20 +4,22 @@ namespace App\GraphQl\Types;
 
 use ApiPlatform\GraphQl\Type\Definition\TypeInterface;
 
+use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
 
 class AuthUnionType extends UnionType implements TypeInterface
 {
-    public function __construct()
+    public function __construct(private AuthenticatedType $authenticatedType, private FailureAuthType $failureAuthType)
     {
-        $this->name = 'UnionAuthType';
         $config = [
-            'name' => 'UnionAuthType',
             'types' => [
-                Type::getNamedType(new AuthenticatedType()),
-                Type::getNamedType(new FailureAuthType())
-            ]
+                Type::getNamedType($authenticatedType),
+                Type::getNamedType($failureAuthType)
+            ],
+            'resolveType' => function ($value) use ($failureAuthType, $authenticatedType): ObjectType {
+                return  in_array('error', array_keys($value)) ? $failureAuthType : $authenticatedType;
+            },
         ];
         parent::__construct($config);
     }
