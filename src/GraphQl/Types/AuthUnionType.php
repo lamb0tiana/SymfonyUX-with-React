@@ -18,7 +18,7 @@ class AuthUnionType extends UnionType implements TypeInterface
                 Type::getNamedType($failureAuthType)
             ],
             'resolveType' => function ($value) use ($failureAuthType, $authenticatedType): ObjectType {
-                return  in_array('error', array_keys($value)) ? $failureAuthType : $authenticatedType;
+                return  !in_array('token', array_keys($value)) ? $failureAuthType : $authenticatedType;
             },
         ];
         parent::__construct($config);

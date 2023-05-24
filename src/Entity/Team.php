@@ -2,7 +2,11 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Action\NotFoundAction;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GraphQl\Query;
+use ApiPlatform\Metadata\GraphQl\QueryCollection;
 use App\Repository\TeamRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -20,7 +24,14 @@ use App\Validator\Team\Team as TeamValidator;
 #[Gedmo]
 #[UniqueEntity(fields: ['name'], message: 'Team with name {{ value }} already exists')]
 #[TeamValidator]
-
+#[ApiResource(
+    paginationClientItemsPerPage: true,
+    graphQlOperations: [
+        new Query(name: 'query_team'),
+        new QueryCollection(
+            name: 'team_collection'
+    )]
+)]
 class Team implements TraceableErrors
 {
     use TimestampableEntity;
