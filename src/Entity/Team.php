@@ -26,6 +26,7 @@ use App\Validator\Team\Team as TeamValidator;
 #[TeamValidator]
 #[ApiResource(
     paginationClientItemsPerPage: true,
+    operations:[],
     graphQlOperations: [
         new Query(name: 'query_team'),
         new QueryCollection(

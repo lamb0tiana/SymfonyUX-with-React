@@ -14,6 +14,8 @@ import Loader from '../Loader'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/authContext'
 import NewTeam from '../Modals/NewTeam'
+import { useQuery } from '@apollo/client'
+import { GET_TEAMS } from './gql/teams'
 
 interface DataRowInterface {
   id: number
@@ -36,6 +38,16 @@ const TeamDataTable = () => {
     count: 0,
   })
 
+  const {
+    loading,
+    error,
+    data: _mydata,
+  } = useQuery(GET_TEAMS, {
+    onCompleted: (data) => console.log(data),
+  })
+  useEffect(() => {
+    _mydata
+  }, [_mydata])
   const navigate = useNavigate()
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage)
