@@ -134,17 +134,17 @@ export type TeamListQueryVariables = Exact<{
 }>;
 
 
-export type TeamListQuery = { __typename?: 'Query', team_collectionTeams?: { __typename?: 'TeamCursorConnection', totalCount: number, edges?: Array<{ __typename?: 'TeamEdge', cursor: string, node?: { __typename?: 'Team', id: string, slug: string, name: string, isocode: string, funds: number } | null } | null> | null } | null };
+export type TeamListQuery = { __typename?: 'Query', team_collectionTeams?: { __typename?: 'TeamCursorConnection', totalCount: number, edges?: Array<{ __typename?: 'TeamEdge', cursor: string, node?: { __typename?: 'Team', slug: string, name: string, id: number, isocode: string, funds: number } | null } | null> | null } | null };
 
 
 export const TeamListDocument = gql`
-    query teamList($count: Int!, $cursor: String = "MA==") {
+    query teamList($count: Int!, $cursor: String = "LTE=") {
   team_collectionTeams(first: $count, after: $cursor) {
     totalCount
     edges {
       cursor
       node {
-        id
+        id: _id
         slug
         name
         isocode: countryCode

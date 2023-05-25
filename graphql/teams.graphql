@@ -1,10 +1,10 @@
-query teamList($count: Int!, $cursor: String = "MA==" ){
+query teamList($count: Int!, $cursor: String = "LTE=" ){
     team_collectionTeams(first: $count, after: $cursor) {
         totalCount
         edges {
             cursor
             node {
-                id
+                id: _id
                 slug
                 name
                 isocode: countryCode

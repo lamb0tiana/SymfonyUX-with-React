@@ -15,7 +15,11 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/authContext'
 import NewTeam from '../Modals/NewTeam'
 import { useQuery } from '@apollo/client'
-import { useTeamListQuery } from '../../../queries/graphql'
+import {
+  Team,
+  TeamListQueryVariables,
+  useTeamListQuery,
+} from '../../../queries/graphql'
 
 interface DataRowInterface {
   id: number
@@ -30,7 +34,7 @@ interface DataTableDataInterface {
 }
 const TeamDataTable = () => {
   const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(10)
+  const [count, setCount] = useState(10)
   const [isFetchingData, setIsFetchingData] = useState(false)
   const { dispatch, token, payloads } = useAuth()
   const [data, setData] = useState<DataTableDataInterface>({
@@ -38,10 +42,25 @@ const TeamDataTable = () => {
     count: 0,
   })
 
-  useTeamListQuery({
-    variables: { count: 1 },
-    onCompleted: (data) => console.warn(data.team_collectionTeams),
+  const { refetch, loading } = useTeamListQuery({
+    variables: { count },
+
+    onCompleted: (data) => {
+      const { totalCount, edges } = data.team_collectionTeams
+      setIsFetchingData(false)
+      setData({
+        teams: edges.map(({ node }) => node),
+        count: totalCount,
+      })
+    },
   })
+  useEffect(() => {
+    setIsFetchingData(true)
+    refetch({
+      count,
+      cursor: btoa((page - 1).toString()),
+    })
+  }, [count, page])
 
   const navigate = useNavigate()
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -51,23 +70,12 @@ const TeamDataTable = () => {
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setRowsPerPage(+event.target.value)
-    setPage(0)
+    setCount(+event.target.value)
   }
 
   useEffect(() => {
     dispatch({ token: localStorage.getItem('app_token') })
   }, [])
-
-  useEffect(() => {
-    const _page = page + 1
-    const url = `${process.env.API_URL}/teams/?page=${_page}&limit=${rowsPerPage}`
-    setIsFetchingData(true)
-    doQuery(url).then(({ data }) => {
-      setData(data)
-      setIsFetchingData(false)
-    })
-  }, [rowsPerPage, page])
 
   return (
     <Grid>
@@ -89,7 +97,7 @@ const TeamDataTable = () => {
           alignItems: 'center',
         }}
       >
-        {isFetchingData ? (
+        {loading || isFetchingData ? (
           <Loader />
         ) : (
           <Paper sx={{ width: '100%', margin: '50px' }}>
@@ -150,10 +158,10 @@ const TeamDataTable = () => {
               </Table>
             </TableContainer>
             <TablePagination
-              rowsPerPageOptions={[10, 25, 100]}
+              rowsPerPageOptions={[1, 2, 3, 10, 25, 100]}
               component="div"
               count={data.count}
-              rowsPerPage={rowsPerPage}
+              rowsPerPage={count}
               page={page}
               onPageChange={handleChangePage}
               onRowsPerPageChange={handleChangeRowsPerPage}
