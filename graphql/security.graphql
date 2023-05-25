@@ -1,0 +1,14 @@
+mutation login($input:_AppAuthenticationInput! ){
+    _AppAuthentication(input: $input){
+        appAuthentication {
+            authPayloads {
+                ... on Authenticated {
+                    token
+                }
+                ... on FailureAuth {
+                    error
+                }
+            }
+        }
+    }
+}

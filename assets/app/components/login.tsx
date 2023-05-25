@@ -3,6 +3,7 @@ import { Button, Grid, Link, TextField, Typography } from '@material-ui/core'
 import { validateToken } from '../context/authContext'
 import { useNavigate } from 'react-router-dom'
 import { doQuery, QueryMethod } from '../utils'
+import { useLoginMutation } from '../../queries/graphql'
 
 const Login = () => {
   const [creds, setCredentials] = useState<{ email: string; password: string }>(
@@ -11,40 +12,35 @@ const Login = () => {
   const [errors, setErrors] = useState<string[]>([])
   const [isRegister, setIsRegister] = useState<boolean>(false)
   const navigate = useNavigate()
-
+  const [auth, { data, loading, error }] = useLoginMutation({
+    variables: { input: creds },
+  })
   const handleSubmit = async (event) => {
     event.preventDefault()
-    const credentialRoute = `${process.env.API_URL}/${
-      isRegister ? 'manager/create' : 'authentication'
-    }`
-    const { data, status } = await doQuery(
-      credentialRoute,
-      QueryMethod.POST,
-      creds
-    )
-    let response = []
-    switch (status) {
-      case 400:
-        response.push(data.errors)
-        break
-      case 401:
-        response.push(data.message)
-        break
-      default:
-        const { token } = data
-        validateToken(token) && navigate('/')
-    }
-
-    response.length > 0 && setErrors(response)
+    await auth({
+      onCompleted: ({
+        _AppAuthentication: {
+          appAuthentication: { authPayloads },
+        },
+      }) => {
+        if (authPayloads.__typename === 'Authenticated') {
+          validateToken(authPayloads.token) && navigate('/')
+        } else {
+          errors.push(authPayloads.error)
+          setErrors(errors)
+        }
+      },
+    })
   }
-
+  const clearErrors = () => setErrors([])
   const handleFieldChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name } = e.target
+    clearErrors()
     setCredentials({ ...creds, [name]: e.target.value })
   }
 
   useEffect(() => {
-    setErrors([])
+    clearErrors()
   }, [isRegister])
 
   useEffect(() => {
