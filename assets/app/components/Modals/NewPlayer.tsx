@@ -8,6 +8,7 @@ import { Typography } from '@material-ui/core'
 import { useAuth } from '../../context/authContext'
 import { useNavigate } from 'react-router-dom'
 import Errors from '../Errors'
+import { useCreatePlayerMutation } from '../../../queries/graphql'
 
 interface CountryNames<T extends string> {
   [key: string]: T
@@ -44,23 +45,20 @@ const NewPlayer = React.forwardRef<
   const handleChangeField = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
-
-  const createPlayer = async () => {}
+  const [createPlayer] = useCreatePlayerMutation({
+    variables: { input: formData },
+    onCompleted: () => {
+      setOpen(false)
+      refreshList()
+    },
+    onError: (error) => {
+      setErrors([error.message])
+    },
+  })
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const route = `${process.env.API_URL}/players/create`
-    const { data, status } = await doQuery(route, QueryMethod.POST, formData)
-    switch (status) {
-      case 400:
-        const _errors = data.map(({ message }) => message)
-        setErrors(_errors)
-        break
-      case 201:
-        setOpen(false)
-        refreshList()
-        break
-    }
+    createPlayer()
   }
 
   React.useImperativeHandle(ref, () => {

@@ -1,0 +1,9 @@
+mutation createPlayer($input: createPlayerInput!){
+    createPlayer(input: $input){
+        player {
+            name
+            slug
+            id
+        }
+    }
+}

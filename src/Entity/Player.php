@@ -18,13 +18,13 @@ use ApiPlatform\Metadata\GraphQl\Query;
 
 #[ORM\Entity(repositoryClass: PlayerRepository::class)]
 #[Gedmo]
-/*#[ApiResource(graphQlOperations: [
+#[ApiResource(graphQlOperations: [
     new Query(),
     new QueryCollection(),
     new Mutation(name: 'create', denormalizationContext: ['groups' => ['post'] ], normalizationContext: ['groups' => ['read']], security: "is_granted('ROLE_USER')")
 ])
-]*/
-#[UniqueEntity(fields: ['name', 'surname'], message: 'This already exists')]
+]
+#[UniqueEntity(fields: ['name', 'surname'], message: 'already exists', errorPath: 'Player')]
 class Player implements TraceableErrors
 {
     use TimestampableEntity;

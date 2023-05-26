@@ -34,9 +34,9 @@ const Login = () => {
   }
   const clearErrors = () => setErrors([])
   const handleFieldChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name } = e.target
+    const { name, value } = e.target
     clearErrors()
-    setCredentials({ ...creds, [name]: e.target.value })
+    setCredentials({ ...creds, [name]: value })
   }
 
   useEffect(() => {

@@ -39,11 +39,18 @@ export type Mutation = {
   __typename?: 'Mutation';
   /** _s a AppAuthentication. */
   _AppAuthentication?: Maybe<_AppAuthenticationPayload>;
+  /** Creates a Player. */
+  createPlayer?: Maybe<CreatePlayerPayload>;
 };
 
 
 export type Mutation_AppAuthenticationArgs = {
   input: _AppAuthenticationInput;
+};
+
+
+export type MutationCreatePlayerArgs = {
+  input: CreatePlayerInput;
 };
 
 /** A node, according to the Relay specification. */
@@ -52,9 +59,46 @@ export type Node = {
   id: Scalars['ID']['output'];
 };
 
+export type Player = Node & {
+  __typename?: 'Player';
+  _id: Scalars['Int']['output'];
+  createdAt: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  slug: Scalars['String']['output'];
+  surname: Scalars['String']['output'];
+  updatedAt: Scalars['String']['output'];
+};
+
+/** Cursor connection for Player. */
+export type PlayerCursorConnection = {
+  __typename?: 'PlayerCursorConnection';
+  edges?: Maybe<Array<Maybe<PlayerEdge>>>;
+  pageInfo: PlayerPageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+/** Edge of Player. */
+export type PlayerEdge = {
+  __typename?: 'PlayerEdge';
+  cursor: Scalars['String']['output'];
+  node?: Maybe<Player>;
+};
+
+/** Information about the current page. */
+export type PlayerPageInfo = {
+  __typename?: 'PlayerPageInfo';
+  endCursor?: Maybe<Scalars['String']['output']>;
+  hasNextPage: Scalars['Boolean']['output'];
+  hasPreviousPage: Scalars['Boolean']['output'];
+  startCursor?: Maybe<Scalars['String']['output']>;
+};
+
 export type Query = {
   __typename?: 'Query';
   node?: Maybe<Node>;
+  player?: Maybe<Player>;
+  players?: Maybe<PlayerCursorConnection>;
   query_teamTeam?: Maybe<Team>;
   team_collectionTeams?: Maybe<TeamCursorConnection>;
 };
@@ -62,6 +106,19 @@ export type Query = {
 
 export type QueryNodeArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryPlayerArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryPlayersArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -128,6 +185,37 @@ export type _AppAuthenticationPayload = {
   clientMutationId?: Maybe<Scalars['String']['output']>;
 };
 
+/** Creates a Player. */
+export type CreatePlayerInput = {
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  surname: Scalars['String']['input'];
+};
+
+/** Creates a Player. */
+export type CreatePlayerPayload = {
+  __typename?: 'createPlayerPayload';
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  player?: Maybe<CreatePlayerPayloadData>;
+};
+
+/** Creates a Player. */
+export type CreatePlayerPayloadData = Node & {
+  __typename?: 'createPlayerPayloadData';
+  _id: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  slug: Scalars['String']['output'];
+  surname: Scalars['String']['output'];
+};
+
+export type CreatePlayerMutationVariables = Exact<{
+  input: CreatePlayerInput;
+}>;
+
+
+export type CreatePlayerMutation = { __typename?: 'Mutation', createPlayer?: { __typename?: 'createPlayerPayload', player?: { __typename?: 'createPlayerPayloadData', name: string, slug: string, id: string } | null } | null };
+
 export type LoginMutationVariables = Exact<{
   input: _AppAuthenticationInput;
 }>;
@@ -144,6 +232,43 @@ export type TeamListQueryVariables = Exact<{
 export type TeamListQuery = { __typename?: 'Query', team_collectionTeams?: { __typename?: 'TeamCursorConnection', totalCount: number, edges?: Array<{ __typename?: 'TeamEdge', cursor: string, node?: { __typename?: 'Team', slug: string, name: string, id: number, isocode: string, funds: number } | null } | null> | null } | null };
 
 
+export const CreatePlayerDocument = gql`
+    mutation createPlayer($input: createPlayerInput!) {
+  createPlayer(input: $input) {
+    player {
+      name
+      slug
+      id
+    }
+  }
+}
+    `;
+export type CreatePlayerMutationFn = Apollo.MutationFunction<CreatePlayerMutation, CreatePlayerMutationVariables>;
+
+/**
+ * __useCreatePlayerMutation__
+ *
+ * To run a mutation, you first call `useCreatePlayerMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePlayerMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createPlayerMutation, { data, loading, error }] = useCreatePlayerMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreatePlayerMutation(baseOptions?: Apollo.MutationHookOptions<CreatePlayerMutation, CreatePlayerMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreatePlayerMutation, CreatePlayerMutationVariables>(CreatePlayerDocument, options);
+      }
+export type CreatePlayerMutationHookResult = ReturnType<typeof useCreatePlayerMutation>;
+export type CreatePlayerMutationResult = Apollo.MutationResult<CreatePlayerMutation>;
+export type CreatePlayerMutationOptions = Apollo.BaseMutationOptions<CreatePlayerMutation, CreatePlayerMutationVariables>;
 export const LoginDocument = gql`
     mutation login($input: _AppAuthenticationInput!) {
   _AppAuthentication(input: $input) {

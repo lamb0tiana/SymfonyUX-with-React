@@ -1,5 +1,19 @@
 type Query {
   node(id: ID!): Node
+  player(id: ID!): Player
+  players(
+    "Returns the first n elements from the list."
+    first: Int
+
+    "Returns the last n elements from the list."
+    last: Int
+
+    "Returns the elements in the list that come before the specified cursor."
+    before: String
+
+    "Returns the elements in the list that come after the specified cursor."
+    after: String
+  ): PlayerCursorConnection
   query_teamTeam(id: ID!): Team
   team_collectionTeams(
     "Returns the first n elements from the list."
@@ -20,6 +34,37 @@ type Query {
 interface Node {
   "The id of this node."
   id: ID!
+}
+
+type Player implements Node {
+  id: ID!
+  _id: Int!
+  name: String!
+  surname: String!
+  slug: String!
+  createdAt: String!
+  updatedAt: String!
+}
+
+"Cursor connection for Player."
+type PlayerCursorConnection {
+  edges: [PlayerEdge]
+  pageInfo: PlayerPageInfo!
+  totalCount: Int!
+}
+
+"Edge of Player."
+type PlayerEdge {
+  node: Player
+  cursor: String!
+}
+
+"Information about the current page."
+type PlayerPageInfo {
+  endCursor: String
+  startCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
 }
 
 type Team implements Node {
@@ -57,6 +102,9 @@ type TeamPageInfo {
 type Mutation {
   "_s a AppAuthentication."
   _AppAuthentication(input: _AppAuthenticationInput!): _AppAuthenticationPayload
+
+  "Creates a Player."
+  createPlayer(input: createPlayerInput!): createPlayerPayload
 }
 
 "_s a AppAuthentication."
@@ -86,4 +134,26 @@ type Authenticated {
 
 type FailureAuth {
   error: String!
+}
+
+"Creates a Player."
+input createPlayerInput {
+  name: String!
+  surname: String!
+  clientMutationId: String
+}
+
+"Creates a Player."
+type createPlayerPayload {
+  player: createPlayerPayloadData
+  clientMutationId: String
+}
+
+"Creates a Player."
+type createPlayerPayloadData implements Node {
+  id: ID!
+  _id: Int!
+  name: String!
+  surname: String!
+  slug: String!
 }
