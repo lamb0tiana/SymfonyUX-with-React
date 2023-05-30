@@ -3,8 +3,11 @@
 namespace App\Entity;
 
 use ApiPlatform\Action\NotFoundAction;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\GraphQl\Query;
 use ApiPlatform\Metadata\GraphQl\QueryCollection;
 use App\Repository\TeamRepository;
@@ -26,13 +29,13 @@ use App\Validator\Team\Team as TeamValidator;
 #[TeamValidator]
 #[ApiResource(
     paginationClientItemsPerPage: true,
-    operations:[],
     graphQlOperations: [
-        new Query(name: 'query_team'),
+        new Query(name: 'item_query'),
         new QueryCollection(
-            name: 'team_collection'
+            name: 'collection_query'
     )]
 )]
+#[ApiFilter(SearchFilter::class, properties: ['slug', 'name'])]
 class Team implements TraceableErrors
 {
     use TimestampableEntity;

@@ -16,6 +16,7 @@ const    ARGS= [
     'password' => ['type' => 'String!']
 ];
 #[ApiResource(
+    operations: [],
     graphQlOperations: [
     new Mutation(name: "_", args:   ARGS, resolver: AuthResolver::class)
 ])]

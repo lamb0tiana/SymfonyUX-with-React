@@ -2,12 +2,8 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\GraphQl\Mutation;
-use ApiPlatform\Metadata\GraphQl\QueryCollection;
 use App\Repository\PlayerTeamRepository;
 use App\Validator\Player\TransfertPlayer as TransfertPlayerValidator;
-use ApiPlatform\Metadata\GraphQl\Query;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;

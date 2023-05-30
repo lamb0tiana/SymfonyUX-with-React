@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GraphQl\Query;
 use App\Repository\TeamManagerRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Lexik\Bundle\JWTAuthenticationBundle\Security\User\JWTUserInterface;
@@ -12,11 +13,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[ORM\Entity(repositoryClass: TeamManagerRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'Email already taken')]
-//#[ApiResource]
+#[ApiResource(graphQlOperations: [new Query(name: 'item_query')])]
 class TeamManager implements UserInterface, PasswordAuthenticatedUserInterface, JWTUserInterface, TraceableErrors
 {
     #[ORM\Id]
