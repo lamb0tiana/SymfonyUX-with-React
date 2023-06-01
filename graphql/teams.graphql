@@ -1,5 +1,5 @@
 query teamList($count: Int!, $cursor: String = "LTE=" ){
-    team_collectionTeams(first: $count, after: $cursor) {
+    teams(first: $count, after: $cursor) {
         totalCount
         edges {
             cursor
@@ -12,4 +12,7 @@ query teamList($count: Int!, $cursor: String = "LTE=" ){
             }
         }
     }
+}
+query teamPlayer($slug: String!){
+
 }

@@ -46,7 +46,7 @@ const TeamDataTable = () => {
     variables: { count },
 
     onCompleted: (data) => {
-      const { totalCount, edges } = data.team_collectionTeams
+      const { totalCount, edges } = data.teams
       setIsFetchingData(false)
       setData({
         teams: edges.map(({ node }) => node),

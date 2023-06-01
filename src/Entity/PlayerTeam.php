@@ -17,8 +17,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PlayerTeamRepository::class)]
 #[UniqueEntity(fields: ['player','team', 'isCurrentTeam'], message: 'This player is already in this team')]
-#[ApiResource(graphQlOperations: [new QueryCollection()])]
-#[ApiFilter(BooleanFilter::class, properties: ['isCurrentTeam'])]
+//#[ApiResource(graphQlOperations: [new QueryCollection()])]
+//#[ApiFilter(BooleanFilter::class, properties: ['isCurrentTeam'])]
 class PlayerTeam
 {
     use TimestampableEntity;
@@ -34,7 +34,7 @@ class PlayerTeam
     #[TransfertPlayerValidator]
     private ?float $cost = 0;
 
-    #[ORM\ManyToOne(inversedBy: 'playerTeams')]
+    #[ORM\ManyToOne(inversedBy: 'playerTeams', fetch: 'EAGER')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['read'])]
     private ?Player $player = null;

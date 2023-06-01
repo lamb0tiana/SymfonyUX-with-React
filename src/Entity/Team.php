@@ -5,11 +5,13 @@ namespace App\Entity;
 use ApiPlatform\Action\NotFoundAction;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\GraphQl\Query;
 use ApiPlatform\Metadata\GraphQl\QueryCollection;
+use App\GraphQl\Types\PlayerCollection;
 use App\Repository\TeamRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -28,6 +30,7 @@ use App\Validator\Team\Team as TeamValidator;
 #[UniqueEntity(fields: ['name'], message: 'Team with name {{ value }} already exists')]
 #[TeamValidator]
 #[ApiResource(
+    operations: [],
     paginationClientItemsPerPage: true,
     graphQlOperations: [
         new Query(name: 'item_query'),
@@ -75,6 +78,13 @@ class Team implements TraceableErrors
     public function __construct()
     {
         $this->playerTeams = new ArrayCollection();
+    }
+
+    #[ApiProperty(readable: true, types: 'Player')]
+    public function getPlayersOfTeam(): PlayerCollection| ArrayCollection{
+        $a = $this->getPlayerTeams()->map(fn(PlayerTeam $playerTeam) => $playerTeam->getPlayer());
+        return $a;
+        return 'ok';
     }
 
     public function getId(): ?int
