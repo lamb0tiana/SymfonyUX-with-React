@@ -31,7 +31,7 @@ services:
     App\GraphQl\Converters\Converter:
         decorates: api_platform.graphql.type_converter
 
-    App\GraphQl\Types\PlayerCollection:
+    App\GraphQl\Types\PlayerItemType:
         arguments: ["%kernel.project_dir%"]
     App\Resolver\Authentication:
         tags:
