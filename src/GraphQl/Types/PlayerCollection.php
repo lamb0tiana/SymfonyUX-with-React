@@ -11,12 +11,12 @@ class PlayerCollection extends ObjectType implements TypeInterface
 {
     public function __construct(private PlayerItemType $itemType, private PlayerRepository $playerRepository)
     {
-
         $config = [
             'fields' => [
                 'players' => ['type' => Type::listOf($this->itemType),
                     'resolve' => function (array $team) {
-                        return [['name' => 'ok', 'id' => 2]];
+                        $playerIds = array_map(fn ($p) =>  $p["#itemIdentifiers"]["id"], $team);
+                        return $this->playerRepository->getPlayers($playerIds);
                     }]
             ],
         ];
@@ -27,5 +27,4 @@ class PlayerCollection extends ObjectType implements TypeInterface
     {
         return $this->name;
     }
-
 }

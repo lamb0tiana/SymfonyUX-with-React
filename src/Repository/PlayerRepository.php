@@ -6,8 +6,10 @@ use App\Entity\Player;
 use App\Entity\PlayerTeam;
 use App\Entity\Team;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\RequestStack;
+use function Doctrine\ORM\QueryBuilder;
 
 /**
  * @extends ServiceEntityRepository<Player>
@@ -42,4 +44,10 @@ class PlayerRepository extends ServiceEntityRepository
         }
     }
 
+    public function getPlayers(array $playersId = []){
+        if(!$playersId) return [];
+        $qb = $this->createQueryBuilder('p');
+        $qb->where($qb->expr()->in('p.id', $playersId));
+        return $qb->getQuery()->getResult(AbstractQuery::HYDRATE_ARRAY);
+    }
 }
