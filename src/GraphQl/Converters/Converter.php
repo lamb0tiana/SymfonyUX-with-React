@@ -4,6 +4,7 @@ namespace App\GraphQl\Converters;
 
 use ApiPlatform\GraphQl\Type\TypeConverterInterface;
 use ApiPlatform\Metadata\GraphQl\Operation;
+use App\Entity\Team;
 use App\GraphQl\Types\AuthUnionType;
 use App\GraphQl\Types\PlayerCollection;
 use GraphQL\Type\Definition\Type as GraphQLType;
@@ -27,10 +28,10 @@ final class Converter implements TypeConverterInterface
     {
         if ($property === "authPayloads") {
             return $this->authUnionType;
-        }
-        if($resourceClass === PlayerCollection::class) {
+        } elseif ($rootResource === Team::class && $property === "playersOfTeam") {
             return $this->playerCollection;
         }
+
         return $this->defaultTypeConverter->convertType($type, $input, $rootOperation, $resourceClass, $rootResource, $property, $depth);
     }
 }
