@@ -13,7 +13,6 @@ class PlayerCollection extends ObjectType implements TypeInterface
     {
         $config = [
             'fields' => [
-
                 'players' => [
                     'type' => Type::listOf($this->itemType),
                     'resolve' => function (array $team) {

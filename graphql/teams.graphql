@@ -14,5 +14,19 @@ query teamList($count: Int!, $cursor: String = "LTE=" ){
     }
 }
 query teamPlayer($slug: String!){
-
+teams(slug: $slug){
+    edges {
+        node {
+            playersOfTeam {
+                players {
+                    id
+                    name
+                    surname
+                    slug
+                    worth
+                }
+            }
+        }
+    }
+}
 }

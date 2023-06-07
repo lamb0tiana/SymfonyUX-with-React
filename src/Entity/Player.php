@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GraphQl\QueryCollection;
 use ApiPlatform\Metadata\Link;
@@ -54,6 +55,9 @@ class Player implements TraceableErrors
     #[Gedmo\Slug(fields: ['name', 'surname'])]
     #[Groups(['read'])]
     private ?string $slug = null;
+
+    #[ApiProperty(readable: true)]
+    private float $worth;
 
     public function __construct()
     {

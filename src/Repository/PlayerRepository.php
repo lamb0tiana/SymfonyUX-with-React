@@ -53,9 +53,16 @@ class PlayerRepository extends ServiceEntityRepository
         }
         $qb = $this->createQueryBuilder('p');
         $qb->innerJoin("p.playerTeams", "playerTeams")->where($qb->expr()->in('p.id', $playersId))
+            ->addSelect("playerTeams.cost")
         ->distinct();
 
 
-        return $qb->getQuery()->getArrayResult();
+        $playersCandidates = $qb->getQuery()->getArrayResult();
+        array_walk($playersCandidates, function (&$candidate) {
+            $candidate[0]['worth'] = $candidate['cost'];
+            $candidate = $candidate[0];
+            return $candidate;
+        }, $playersCandidates);
+        return $playersCandidates;
     }
 }
