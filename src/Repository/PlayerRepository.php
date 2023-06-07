@@ -46,7 +46,7 @@ class PlayerRepository extends ServiceEntityRepository
         }
     }
 
-    public function getPlayers(bool $forCurrentTeam = null, array $playersId = [])
+    public function getPlayers(array $playersId = [])
     {
         if (!$playersId) {
             return [];
@@ -55,11 +55,7 @@ class PlayerRepository extends ServiceEntityRepository
         $qb->innerJoin("p.playerTeams", "playerTeams")->where($qb->expr()->in('p.id', $playersId))
         ->distinct();
 
-        if ($forCurrentTeam !== null) {
-            $qb
-                ->andWhere($qb->expr()->eq("playerTeams.isCurrentTeam", ':currentStateValue'))
-            ->setParameter('currentStateValue', $forCurrentTeam);
-        }
+
         return $qb->getQuery()->getArrayResult();
     }
 }
