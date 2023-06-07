@@ -15,9 +15,10 @@ import PlayerWorth, { RefWorthModalRefInterface } from '../Modals/PlayerWorth'
 import NewTeam from '../Modals/NewTeam'
 import NewPlayer, { RefNewPlayerInterface } from '../Modals/NewPlayer'
 import Errors from '../Errors'
+import { useTeamPlayerQuery } from '../../../queries/graphql'
 
 type PlayerType = {
-  id: number
+  id: number | string
   name: string
   surname: string
   worth: number
@@ -32,17 +33,22 @@ const Players = () => {
   const hasTeam: boolean = payloads?.team?.id != null
   const [isOwner, setIsOwner] = useState<boolean>(false)
   const [errors, setErrors] = useState<string[]>([])
-  const fetchingData = () => {
-    const url = `${process.env.API_URL}/teams/${slug}/players`
-    setIsFetchingData(true)
-    doQuery(url).then(({ data }) => {
-      setData(data)
-      setIsFetchingData(false)
-    })
-  }
+  const { refetch, loading } = useTeamPlayerQuery({
+    variables: { slug },
+    onCompleted: ({ teams: { edges } }) => {
+      if (edges.length > 0) {
+        const {
+          node: {
+            playersOfTeam: { players },
+          },
+        } = edges[0]
+        setData(players)
+      }
+    },
+  })
+
   useEffect(() => {
     dispatch({ token: localStorage.getItem('app_token') })
-    fetchingData()
   }, [])
 
   useEffect(() => {
@@ -70,7 +76,7 @@ const Players = () => {
       const _errors = response.map(({ message }) => message)
       setErrors(_errors)
     } else if (status === 201) {
-      fetchingData()
+      refetch()
       const { token } = await getRefreshedToken()
       if (token) {
         validateToken(token) && dispatch({ token })
@@ -114,7 +120,7 @@ const Players = () => {
           marginTop: '15px',
         }}
       >
-        {isFetchingData ? (
+        {loading ? (
           <Loader />
         ) : data.length > 0 ? (
           <Paper sx={{ width: '100%', margin: '50px' }}>
@@ -180,9 +186,9 @@ const Players = () => {
           <Typography>No player available</Typography>
         )}
       </div>
-      <PlayerWorth ref={PlayerWorthRef} refreshList={fetchingData} />
+      <PlayerWorth ref={PlayerWorthRef} refreshList={refetch} />
       {token ? <NewTeam isOpen={!payloads?.team?.id} /> : ''}
-      <NewPlayer ref={newPlayerRef} refreshList={fetchingData} />
+      <NewPlayer ref={newPlayerRef} refreshList={refetch} />
     </Grid>
   )
 }

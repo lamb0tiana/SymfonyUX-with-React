@@ -44,7 +44,6 @@ const TeamDataTable = () => {
 
   const { refetch, loading } = useTeamListQuery({
     variables: { count },
-
     onCompleted: (data) => {
       const { totalCount, edges } = data.teams
       setIsFetchingData(false)
