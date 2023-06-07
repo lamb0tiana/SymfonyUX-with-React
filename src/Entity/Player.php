@@ -5,9 +5,8 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GraphQl\QueryCollection;
-use ApiPlatform\Metadata\Link;
-use App\GraphQl\Types\PlayerCollection;
 use App\Repository\PlayerRepository;
+use App\Resolver\PlayerMutation;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -18,16 +17,17 @@ use Symfony\Component\Validator\Constraints\Length;
 use Gedmo\Mapping\Annotation as Gedmo;
 use ApiPlatform\Metadata\GraphQl\Mutation;
 use ApiPlatform\Metadata\GraphQl\Query;
-
 #[ORM\Entity(repositoryClass: PlayerRepository::class)]
 #[Gedmo]
 #[ApiResource(graphQlOperations: [
     new Query(),
     new QueryCollection(),
-    new Mutation(name: 'create', denormalizationContext: ['groups' => ['post'] ], normalizationContext: ['groups' => ['read']], security: "is_granted('ROLE_USER')")
+    new Mutation(name: 'create', denormalizationContext: ['groups' => ['post'] ], normalizationContext: ['groups' => ['read']], security: "is_granted('ROLE_USER')"),
+    new Mutation(name: "updateWorth", args: ["id" => ['type' => 'ID!'] ,"worth" => ['type' => 'Float!']], resolver: PlayerMutation::class, security: "is_granted('ROLE_USER')")
 ])
 ]
 #[UniqueEntity(fields: ['name', 'surname'], message: 'already exists', errorPath: 'Player')]
+
 class Player implements TraceableErrors
 {
     use TimestampableEntity;
@@ -58,6 +58,17 @@ class Player implements TraceableErrors
 
     #[ApiProperty(readable: true)]
     private float $worth;
+
+    public function setWorth(float $worth = null): self{
+        if($worth){
+            $this->worth = $worth;
+        }
+        return $this;
+    }
+
+    public function getWorth() : float {
+        return $this->worth;
+    }
 
     public function __construct()
     {
