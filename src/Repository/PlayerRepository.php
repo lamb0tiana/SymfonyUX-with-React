@@ -6,9 +6,11 @@ use App\Entity\Player;
 use App\Entity\PlayerTeam;
 use App\Entity\Team;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\RequestStack;
+
 use function Doctrine\ORM\QueryBuilder;
 
 /**
@@ -44,10 +46,20 @@ class PlayerRepository extends ServiceEntityRepository
         }
     }
 
-    public function getPlayers(array $playersId = []){
-        if(!$playersId) return [];
+    public function getPlayers(bool $forCurrentTeam = null, array $playersId = [])
+    {
+        if (!$playersId) {
+            return [];
+        }
         $qb = $this->createQueryBuilder('p');
-        $qb->where($qb->expr()->in('p.id', $playersId));
-        return $qb->getQuery()->getResult(AbstractQuery::HYDRATE_ARRAY);
+        $qb->innerJoin("p.playerTeams", "playerTeams")->where($qb->expr()->in('p.id', $playersId))
+        ->distinct();
+
+        if ($forCurrentTeam !== null) {
+            $qb
+                ->andWhere($qb->expr()->eq("playerTeams.isCurrentTeam", ':currentStateValue'))
+            ->setParameter('currentStateValue', $forCurrentTeam);
+        }
+        return $qb->getQuery()->getArrayResult();
     }
 }

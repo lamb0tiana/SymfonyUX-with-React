@@ -13,10 +13,17 @@ class PlayerCollection extends ObjectType implements TypeInterface
     {
         $config = [
             'fields' => [
-                'players' => ['type' => Type::listOf($this->itemType),
-                    'resolve' => function (array $team) {
+
+                'players' => [
+                    'type' => Type::listOf($this->itemType),
+                    'args' => ["inCurrentTeam" =>[ 'type' => Type::boolean()]],
+                    'resolve' => function (array $team, $args) {
+                        $inCurrentTeam = null;
+                        if ($args) {
+                            ['inCurrentTeam' => $inCurrentTeam] = $args;
+                        }
                         $playerIds = array_map(fn ($p) =>  $p["#itemIdentifiers"]["id"], $team);
-                        return $this->playerRepository->getPlayers($playerIds);
+                        return $this->playerRepository->getPlayers($inCurrentTeam, $playerIds);
                     }]
             ],
         ];
