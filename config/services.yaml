@@ -36,3 +36,7 @@ services:
     App\Resolver\Authentication:
         tags:
             - { name: api_platform.graphql.query_resolver }
+    'App\Serializer\Normalizer\TeamNormalizer':
+        # By default .inner is passed as argument
+        tags:
+            - { name: 'serializer.normalizer', priority: 64 }

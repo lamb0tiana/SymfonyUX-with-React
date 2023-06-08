@@ -81,9 +81,8 @@ class Team implements TraceableErrors
     }
 
     #[ApiProperty(readable: true)]
-    public function getPlayersOfTeam(): ArrayCollection{
-        return $this->getPlayerTeams()->filter(fn(PlayerTeam $playerTeam) => $playerTeam->isIsCurrentTeam())->map(fn(PlayerTeam $playerTeam) => $playerTeam->getPlayer());
-    }
+    public ArrayCollection $playersOfTeam;
+
 
     public function getId(): ?int
     {

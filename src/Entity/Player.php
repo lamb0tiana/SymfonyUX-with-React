@@ -59,6 +59,9 @@ class Player implements TraceableErrors
     #[ApiProperty(readable: true)]
     private float $worth;
 
+    #[ApiProperty(readable: true)]
+    public ?Team $currentTeam;
+
     public function setWorth(float $worth = null): self{
         if($worth){
             $this->worth = $worth;

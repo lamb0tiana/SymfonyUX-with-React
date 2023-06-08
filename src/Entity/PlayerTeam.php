@@ -2,12 +2,7 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
-use ApiPlatform\Metadata\ApiFilter;
-use ApiPlatform\Metadata\ApiProperty;
-use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\GraphQl\QueryCollection;
-use ApiPlatform\Metadata\Link;
+
 use App\Repository\PlayerTeamRepository;
 use App\Validator\Player\TransfertPlayer as TransfertPlayerValidator;
 use Doctrine\ORM\Mapping as ORM;
@@ -17,8 +12,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PlayerTeamRepository::class)]
 #[UniqueEntity(fields: ['player','team', 'isCurrentTeam'], message: 'This player is already in this team')]
-//#[ApiResource(graphQlOperations: [new QueryCollection()])]
-//#[ApiFilter(BooleanFilter::class, properties: ['isCurrentTeam'])]
+
 class PlayerTeam
 {
     use TimestampableEntity;
