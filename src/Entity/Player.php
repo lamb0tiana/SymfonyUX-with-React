@@ -35,16 +35,16 @@ class Player implements TraceableErrors
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read'])]
+    #[Groups(['read', 'item:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
     #[Length(min: 4, minMessage: 'Too short, min 4')]
-    #[Groups(['read', 'post'])]
+    #[Groups(['read', 'post', 'item:read'])]
     private string $name;
 
     #[ORM\Column(length: 100)]
-    #[Groups(['read', 'post'])]
+    #[Groups(['read', 'post', 'item:read'])]
     private ?string $surname = null;
 
     #[ORM\OneToMany(mappedBy: 'player', targetEntity: PlayerTeam::class, orphanRemoval: true)]
@@ -53,10 +53,11 @@ class Player implements TraceableErrors
 
     #[ORM\Column(length: 128, unique: true)]
     #[Gedmo\Slug(fields: ['name', 'surname'])]
-    #[Groups(['read'])]
+    #[Groups(['read', 'item:read'])]
     private ?string $slug = null;
 
     #[ApiProperty(readable: true)]
+    #[Groups('item:read')]
     private float $worth;
 
     #[ApiProperty(readable: true)]

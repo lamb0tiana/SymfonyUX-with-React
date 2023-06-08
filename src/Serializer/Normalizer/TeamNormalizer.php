@@ -6,16 +6,18 @@ use App\Entity\PlayerTeam;
 use App\Entity\Team;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Serializer\SerializerAwareInterface;
+use Symfony\Component\Serializer\SerializerAwareTrait;
 
-class TeamNormalizer implements NormalizerInterface, NormalizerAwareInterface
+class TeamNormalizer implements NormalizerInterface, NormalizerAwareInterface, SerializerAwareInterface
 {
     use NormalizerAwareTrait;
+    use SerializerAwareTrait;
 
-    private const ALREADY_CALLED = 'BOOK_ATTRIBUTE_NORMALIZER_ALREADY_CALLED';
+    private const ALREADY_CALLED = 'ALREADY_CALLED';
 
 
     public function normalize($object, $format = null, array $context = [])
@@ -24,9 +26,9 @@ class TeamNormalizer implements NormalizerInterface, NormalizerAwareInterface
 
         $context[self::ALREADY_CALLED] = true;
 
-        $ppp = $this->normalizer->normalize($object, $format, $context);
-        $ppp['playersOfTeam'] = $this->getPlayerOfTeam($object)->toArray();
-        return $ppp;
+        $data = $this->normalizer->normalize($object, $format, $context);
+        $data['playersOfTeam'] = $this->getPlayerOfTeam($object)->toArray();
+        return $data;
     }
 
     private function getActivePlayersInTeam(Team $team): Collection
@@ -37,11 +39,16 @@ class TeamNormalizer implements NormalizerInterface, NormalizerAwareInterface
     private function getPlayerOfTeam(Team $team): ArrayCollection
     {
         $activePlayers = $this->getActivePlayersInTeam($team);
-        return $activePlayers->map(function (PlayerTeam $playerTeam) use ($team) {
+        $players =  $activePlayers->map(function (PlayerTeam $playerTeam) use ($team) {
             $player =  $playerTeam->getPlayer();
             $player->currentTeam = $team;
+            $player->setWorth($playerTeam->getCost());
             return $player;
         });
+
+        $serializedPlayers = $this->serializer->serialize($players, 'json', ['groups' => ['item:read']]);
+        $data =  json_decode($serializedPlayers, true);
+        return new ArrayCollection($data);
     }
 
     public function supportsNormalization($data, $format = null, array $context = [])

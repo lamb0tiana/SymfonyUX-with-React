@@ -7,19 +7,17 @@ use App\Entity\Player;
 use App\Repository\PlayerRepository;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class PlayerCollection extends ObjectType implements TypeInterface
 {
-    public function __construct(private PlayerItemType $itemType, private PlayerRepository $playerRepository)
+    public function __construct(private PlayerItemType $itemType, private PlayerRepository $playerRepository, private SerializerInterface $serializer)
     {
         $config = [
             'fields' => [
                 'players' => [
                     'type' => Type::listOf($this->itemType),
-                    'resolve' => function (array $players) {
-                        $playerIds = array_map(fn (Player $p) =>  $p->getId(), $players);
-                        return $this->playerRepository->getPlayers($playerIds);
-                    }]
+                    'resolve' => fn (array $players) => $players]
             ],
         ];
         parent::__construct($config);
