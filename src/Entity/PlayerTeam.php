@@ -20,11 +20,12 @@ class PlayerTeam
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['aa'])]
     private ?int $id = null;
 
 
     #[ORM\Column]
-    #[Groups(['read'])]
+    #[Groups(['read','aa'])]
     #[TransfertPlayerValidator]
     private ?float $cost = 0;
 

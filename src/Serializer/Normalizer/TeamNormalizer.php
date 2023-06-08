@@ -46,8 +46,7 @@ class TeamNormalizer implements NormalizerInterface, NormalizerAwareInterface, S
             return $player;
         });
 
-        $serializedPlayers = $this->serializer->serialize($players, 'json', ['groups' => ['item:read']]);
-        $data =  json_decode($serializedPlayers, true);
+        $data = $this->normalizer->normalize($players, 'json', ['groups' => ['item:read']]);
         return new ArrayCollection($data);
     }
 
