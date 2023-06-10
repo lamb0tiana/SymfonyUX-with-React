@@ -2,6 +2,7 @@
 
 namespace App\Serializer\Normalizer;
 
+use App\Entity\Player;
 use App\Entity\PlayerTeam;
 use App\Entity\Team;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -17,18 +18,25 @@ class TeamNormalizer implements NormalizerInterface, NormalizerAwareInterface, S
     use NormalizerAwareTrait;
     use SerializerAwareTrait;
 
-    private const ALREADY_CALLED = 'ALREADY_CALLED';
+    public const TEAM_ALREADY_CALLED = 'TEAM_ALREADY_CALLED';
 
 
     public function normalize($object, $format = null, array $context = [])
     {
-
-
-        $context[self::ALREADY_CALLED] = true;
-
-        $data = $this->normalizer->normalize($object, $format, $context);
-        $data['playersOfTeam'] = $this->getPlayerOfTeam($object)->toArray();
-        return $data;
+        $context[self::TEAM_ALREADY_CALLED] = true;
+        if ($object instanceof Team) {
+            $data = $this->normalizer->normalize($object, $format, $context);
+            $data['playersOfTeam'] = $this->getPlayerOfTeam($object, $context)->toArray();
+            return $data;
+        } elseif ($object instanceof Player) {
+            /** @var PlayerTeam|null $playerTeam */
+            $playerTeam = $object->getPlayerTeams()->findFirst(fn (int $i, PlayerTeam $playerTeam) => $playerTeam->isIsCurrentTeam());
+            if ($playerTeam) {
+                $currentTeam = $playerTeam->getTeam();
+                $object->currentTeam = $currentTeam;
+            }
+        }
+        return  $this->normalizer->normalize($object, $format, $context);
     }
 
     private function getActivePlayersInTeam(Team $team): Collection
@@ -36,7 +44,7 @@ class TeamNormalizer implements NormalizerInterface, NormalizerAwareInterface, S
         return $team->getPlayerTeams()->filter(fn (PlayerTeam $playerTeam) => $playerTeam->isIsCurrentTeam());
     }
 
-    private function getPlayerOfTeam(Team $team): ArrayCollection
+    private function getPlayerOfTeam(Team $team, array $context): ArrayCollection
     {
         $activePlayers = $this->getActivePlayersInTeam($team);
         $players =  $activePlayers->map(function (PlayerTeam $playerTeam) use ($team) {
@@ -46,19 +54,17 @@ class TeamNormalizer implements NormalizerInterface, NormalizerAwareInterface, S
             return $player;
         });
 
-        $data = $this->normalizer->normalize($players, 'json', ['groups' => ['item:read']]);
+        $data = $this->normalizer->normalize($players, 'json', ['groups' => ['item:read'], 'ignore_next' => true]);
         return new ArrayCollection($data);
     }
 
     public function supportsNormalization($data, $format = null, array $context = [])
     {
         // Make sure we're not called twice
-        if (isset($context[self::ALREADY_CALLED])) {
+        if (isset($context[self::TEAM_ALREADY_CALLED])) {
             return false;
         }
 
-        return $data instanceof Team;
+        return $data instanceof Team || $data instanceof Player;
     }
-
-
 }
