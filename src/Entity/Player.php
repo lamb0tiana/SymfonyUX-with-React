@@ -7,6 +7,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GraphQl\QueryCollection;
 use App\Repository\PlayerRepository;
 use App\Resolver\PlayerMutation;
+use App\Security\Voter\PlayerWorthVoter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -23,7 +24,7 @@ use ApiPlatform\Metadata\GraphQl\Query;
     new Query(),
     new QueryCollection(),
     new Mutation(name: 'create', denormalizationContext: ['groups' => ['post'] ], normalizationContext: ['groups' => ['read']], security: "is_granted('ROLE_USER')"),
-    new Mutation(name: "updateWorth", args: ["id" => ['type' => 'ID!'] ,"worth" => ['type' => 'Float!']], resolver: PlayerMutation::class, security: "is_granted('ROLE_USER')")
+    new Mutation(name: "updateWorth", args: ["id" => ['type' => 'ID!'] ,"worth" => ['type' => 'Float!']], resolver: PlayerMutation::class, security: "is_granted('".PlayerWorthVoter::CAN_SET_WORTH."', object)"),
 ])
 ]
 #[UniqueEntity(fields: ['name', 'surname'], message: 'already exists', errorPath: 'Player')]

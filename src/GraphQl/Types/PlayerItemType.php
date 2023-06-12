@@ -14,7 +14,7 @@ class PlayerItemType extends ObjectType implements TypeInterface
         $schema = BuildSchema::build($out);
         $type =  $schema->getType('Player');
         $fields = $type->getFields();
-        unset($fields['playerTeams'], $fields['_id']);
+        unset($fields['playerTeams'], $fields['_id'], $fields['currentTeam']);
 
         $config = [
             'fields' => $fields,

@@ -36,7 +36,7 @@ class PlayerController extends BaseApiController
         })->last();
 
         ['worth' => $worth] = $post;
-        $worth = str_replace([" "], [""], $worth) ;
+        $worth = preg_replace("/[^\d]/", "", $worth) ;
         if (preg_match("/[^\d]/", $worth)) {
             return $this->json(['Worth is not correct'], Response::HTTP_BAD_REQUEST);
         }
