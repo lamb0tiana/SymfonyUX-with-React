@@ -46,6 +46,7 @@ const PlayerWorth = React.forwardRef<
       setOpen(false)
       refreshList()
     },
+    onError: (error) => setErrors([error.message]),
   })
 
   const handleSubmit = async (e) => {
@@ -55,6 +56,7 @@ const PlayerWorth = React.forwardRef<
 
   useEffect(() => {
     setErrors([])
+    console.log(data, data?.worth?.toLocaleString())
   }, [data])
   return (
     <div>
@@ -86,10 +88,10 @@ const PlayerWorth = React.forwardRef<
                   <InputAdornment position="start">$</InputAdornment>
                 }
                 name="worth"
-                onChange={(e) =>
+                onChange={({ target: { value } }) =>
                   setData({
                     ...data,
-                    worth: +e.target.value,
+                    worth: +value.match(/\d/g).join(''),
                   })
                 }
                 value={data?.worth?.toLocaleString()}

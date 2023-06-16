@@ -26,7 +26,6 @@ type PlayerType = {
 }
 const Players = () => {
   const { slug } = useParams()
-  const [isFetchingData, setIsFetchingData] = useState(false)
   const [data, setData] = useState<PlayerType[]>([])
   const { dispatch, payloads, token } = useAuth()
   const [isAddPlayer, setIsAddPlayer] = useState<boolean>(false)
@@ -45,6 +44,7 @@ const Players = () => {
         setData(players)
       }
     },
+    onError: (error) => setErrors([error.message]),
   })
 
   useEffect(() => {
