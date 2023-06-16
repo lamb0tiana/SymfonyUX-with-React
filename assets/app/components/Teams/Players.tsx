@@ -60,10 +60,11 @@ const Players = () => {
 
   const newPlayerRef: React.RefObject<RefNewPlayerInterface> = useRef(null)
 
-  const setWorth = ({ worth, slug }) =>
+  const setWorth = ({ worth, slug, iri }) =>
     PlayerWorthRef.current.handleOpen({
       slug,
       worth,
+      iri,
     })
 
   const buyPlayer = async ({ worth, slug }) => {
@@ -83,8 +84,8 @@ const Players = () => {
       }
     }
   }
-  const handleClick = ({ worth, slug }) => {
-    isOwner ? setWorth({ worth, slug }) : buyPlayer({ worth, slug })
+  const handleClick = ({ worth, slug, iri }) => {
+    isOwner ? setWorth({ worth, slug, iri }) : buyPlayer({ worth, slug })
   }
   return (
     <Grid textAlign={'center'}>
@@ -147,7 +148,13 @@ const Players = () => {
                             variant="contained"
                             size={'small'}
                             disabled={!hasTeam}
-                            onClick={(e) => handleClick({ worth, slug })}
+                            onClick={(e) =>
+                              handleClick({
+                                worth,
+                                slug,
+                                iri: `/api/players/${id}`,
+                              })
+                            }
                           >
                             {`${
                               isOwner

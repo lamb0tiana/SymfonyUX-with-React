@@ -34,6 +34,7 @@ class TeamNormalizer implements NormalizerInterface, NormalizerAwareInterface, S
             if ($playerTeam) {
                 $currentTeam = $playerTeam->getTeam();
                 $object->currentTeam = $currentTeam;
+                $object->setWorth($playerTeam->getCost());
             }
         }
         return  $this->normalizer->normalize($object, $format, $context);

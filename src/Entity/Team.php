@@ -81,7 +81,7 @@ class Team implements TraceableErrors
     }
 
     #[ApiProperty(readable: true)]
-    public ArrayCollection $playersOfTeam;
+    public ?ArrayCollection $playersOfTeam;
 
 
     public function getId(): ?int

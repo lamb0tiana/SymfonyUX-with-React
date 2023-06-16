@@ -10,16 +10,21 @@ class PlayerItemType extends ObjectType implements TypeInterface
 {
     public function __construct(private string $dir)
     {
-        $out = file_get_contents("$dir/public/schema.graphql");
-        $schema = BuildSchema::build($out);
-        $type =  $schema->getType('Player');
-        $fields = $type->getFields();
-        unset($fields['playerTeams'], $fields['_id'], $fields['currentTeam']);
+        $out = @file_get_contents("$dir/public/schema.graphql");
+        $config = ['fields' => []];
+        if($out) {
 
-        $config = [
-            'fields' => $fields,
+            $schema = BuildSchema::build($out);
+            $type =  $schema->getType('Player');
+            $fields = $type->getFields();
+            unset($fields['playerTeams'], $fields['_id'], $fields['currentTeam']);
 
-        ];
+            $config = [
+                'fields' => $fields,
+
+            ];
+
+        }
         parent::__construct($config);
     }
 

@@ -5,10 +5,12 @@ import { FormControl, Input, InputAdornment, InputLabel } from '@mui/material'
 import { doQuery, QueryMethod } from '../../utils'
 import { ModalRefreshlistInterface } from './NewPlayer'
 import Errors from '../Errors'
+import { useUpdateWorthMutation } from '../../../queries/graphql'
 
 interface DefinitionWorthInterface {
   slug: string
-  worth: number | string
+  worth: number
+  iri: string
 }
 
 interface RefWorthModalRefInterface {
@@ -32,27 +34,23 @@ const PlayerWorth = React.forwardRef<
       },
     }
   })
-  const setWorth = async () => {
-    const route = `${process.env.API_URL}/players/${data.slug}/worth`
-    const { data: response, status } = await doQuery(
-      route,
-      QueryMethod.POST,
-      data
-    )
 
-    return { response, status }
-  }
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    const { response, status } = await setWorth()
-    if (status === 204) {
+  const [setPlayerWorth, { data: _data, loading }] = useUpdateWorthMutation({
+    variables: {
+      input: {
+        id: data?.iri,
+        worth: data?.worth,
+      },
+    },
+    onCompleted: (data) => {
       setOpen(false)
       refreshList()
-    } else if (status === 400) {
-      setErrors(response)
-    } else if (status === 403) {
-      setErrors(['You are not allowed to do this action.'])
-    }
+    },
+  })
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setPlayerWorth()
   }
 
   useEffect(() => {
@@ -91,7 +89,7 @@ const PlayerWorth = React.forwardRef<
                 onChange={(e) =>
                   setData({
                     ...data,
-                    worth: e.target.value,
+                    worth: +e.target.value,
                   })
                 }
                 value={data?.worth?.toLocaleString()}

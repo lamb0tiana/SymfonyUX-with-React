@@ -7,3 +7,14 @@ mutation createPlayer($input: createPlayerInput!){
         }
     }
 }
+
+mutation updateWorth($input: updateWorthPlayerInput!){
+    updateWorthPlayer(input: $input) {
+        player {
+            id
+            worth
+            name
+            surname
+        }
+    }
+}

@@ -71,8 +71,11 @@ class Player implements TraceableErrors
         return $this;
     }
 
+    /**
+     * @return float
+     */
     public function getWorth() : float {
-        return $this->worth;
+        return $this->worth ?? 0;
     }
 
     public function __construct()
