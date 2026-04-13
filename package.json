@@ -48,7 +48,7 @@
         "@mui/material": "^5.12.3",
         "@mui/x-data-grid": "^6.3.0",
         "@types/jwt-decode": "^3.1.0",
-        "axios": "^1.4.0",
+        "axios": "^1.15.0",
         "country-list": "^2.3.0",
         "graphql": "^16.6.0",
         "graphql-tag": "^2.12.6",
