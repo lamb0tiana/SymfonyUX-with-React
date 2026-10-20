@@ -1,4 +1,4 @@
-name: 'Build and deploy lamb0tiana/SymfonyUX-with-React'
+name: 'Build and deploy lamb0tiana/SymfonyUX-with-React a'
 'on':
   push:
     branches:
